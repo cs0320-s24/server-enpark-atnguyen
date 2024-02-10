@@ -8,7 +8,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> Generic type so the CSVParser can return a generic List.
  */
-public class CSVParser<T> implements Iterable<T>{
+public class CSVParser<T> implements Iterable<T> {
 
   private BufferedReader bReader;
   private CreatorFromRow<T> creator;
@@ -78,5 +77,4 @@ public class CSVParser<T> implements Iterable<T>{
       throw new RuntimeException(e);
     }
   }
-
 }

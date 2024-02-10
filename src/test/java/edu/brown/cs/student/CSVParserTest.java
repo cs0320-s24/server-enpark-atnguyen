@@ -6,7 +6,6 @@ import edu.brown.cs.student.main.CreatorFromRowClasses.CreatorFromRow;
 import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
 import edu.brown.cs.student.main.CreatorFromRowClasses.Star.Star;
 import edu.brown.cs.student.main.CreatorFromRowClasses.Star.StarCreator;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -31,12 +30,12 @@ public class CSVParserTest {
 
   @Test
   public void testForEach() throws IOException, FactoryFailureException {
-    CSVParser<ArrayList<String>> stars = new CSVParser(new FileReader(
-        "data/malformed/malformed_signs.csv"), new ArrayListCreator());
+    CSVParser<ArrayList<String>> stars =
+        new CSVParser(new FileReader("data/malformed/malformed_signs.csv"), new ArrayListCreator());
     for (ArrayList<String> s : stars) {
       System.out.println(s.getClass());
     }
-    Assert.assertEquals(1,1);
+    Assert.assertEquals(1, 1);
   }
 
   @Test

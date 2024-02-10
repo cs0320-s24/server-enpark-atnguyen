@@ -5,7 +5,6 @@ import edu.brown.cs.student.main.CreatorFromRowClasses.ArrayListCreator;
 import edu.brown.cs.student.main.CreatorFromRowClasses.CreatorFromRow;
 import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
 import edu.brown.cs.student.main.Searcher;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
