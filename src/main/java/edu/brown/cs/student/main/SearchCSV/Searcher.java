@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main;
+package edu.brown.cs.student.main.SearchCSV;
 
 import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
 import java.io.IOException;
@@ -9,14 +9,16 @@ import java.util.List;
 public class Searcher {
 
   private CSVParser parser;
+  private List<ArrayList<String>> csv;
 
   /**
    * Constructor for the Searcher class that defines the parser field.
    *
-   * @param parser - a CSVParser that the searcher uses to parse a CSV
+   * @param parsedCSV - a CSV that has already been parsed into an ArrayList<String>
    */
-  public Searcher(CSVParser parser) {
+  public Searcher(CSVParser parser, List<ArrayList<String>> parsedCSV) {
     this.parser = parser;
+    this.csv = parsedCSV;
   }
 
   /**
@@ -32,21 +34,19 @@ public class Searcher {
   public List<ArrayList<String>> search(String toFind, boolean hasHeaders)
       throws FactoryFailureException, IOException {
     List<ArrayList<String>> rowsWithVal = new ArrayList<>();
-    List<ArrayList<String>> parsedCSV = this.parser.parse(hasHeaders);
     int numCols = 0;
     // find the number of expected columns based on the number of headers or the number of items in
     // the first row
     if (hasHeaders) {
       numCols = findNumCols(this.parser.getCSVHeaders());
     } else {
-      numCols = findNumCols(parsedCSV.get(0));
+      numCols = findNumCols(this.csv.get(0));
     }
 
-    for (ArrayList<String> row : parsedCSV) {
+    for (ArrayList<String> row : this.csv) {
       // statement to warn users that their CSV may be malformed, but it is still searchable
       if (numCols != this.findNumCols(row)) {
-        System.out.println(
-            "Warning: Row " + parsedCSV.indexOf(row) + " has an incorrect number of columns");
+        // TODO: add error/warning handling here for a malformed row
       }
       for (String word : row) { // check each column
         if (word.toLowerCase().equals(toFind.toLowerCase())) {
@@ -74,7 +74,6 @@ public class Searcher {
 
     List<ArrayList<String>> rowsWithVal = new ArrayList<>();
     // want to keep the headers in to determine the header's column index
-    List<ArrayList<String>> parsedCSV = this.parser.parse(hasHeaders);
 
     int numCols = 0;
     List<String> headers = new ArrayList<>();
@@ -82,12 +81,11 @@ public class Searcher {
       headers = this.parser.getCSVHeaders();
       numCols = findNumCols(headers);
     } else {
-      numCols = findNumCols(parsedCSV.get(0));
+      numCols = findNumCols(this.csv.get(0));
     }
 
     int colIndex = -1;
     // determine String header column index
-
     for (int i = 0; i < numCols; i++) {
       // for header names
       if (hasHeaders) {
@@ -105,15 +103,14 @@ public class Searcher {
 
     // header was not found or index is invalid
     if (colIndex < 0) {
-      throw new IllegalArgumentException("Invalid column");
+      // TODO: add error handling for an invalid column
     }
 
     // start at the second row if there's headers
-    for (int i = 0; i < parsedCSV.size(); i++) { // for each row
-      ArrayList<String> row = parsedCSV.get(i);
+    for (int i = 0; i < this.csv.size(); i++) { // for each row
+      ArrayList<String> row = this.csv.get(i);
       if (numCols != this.findNumCols(row)) {
-        System.out.println(
-            "Warning: Row " + parsedCSV.indexOf(row) + " has an incorrect number of columns");
+            // TODO: add error/warning handling here for a malformed row
       }
       try {
         if (row.get(colIndex).toLowerCase().equals(toFind.toLowerCase())) {
@@ -134,7 +131,7 @@ public class Searcher {
    */
   public int findNumCols(List<String> row) {
     int numCols = 0;
-    for (String word : row) {
+    for (int i = 0; i < row.size(); i ++) {
       numCols++;
     }
     return numCols;
