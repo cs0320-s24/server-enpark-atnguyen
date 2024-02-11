@@ -1,6 +1,6 @@
 package edu.brown.cs.student;
 
-import edu.brown.cs.student.main.CSVParser;
+import edu.brown.cs.student.main.SearchCSV.CSVParser;
 import edu.brown.cs.student.main.CreatorFromRowClasses.ArrayListCreator;
 import edu.brown.cs.student.main.CreatorFromRowClasses.CreatorFromRow;
 import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;

@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main;
+package edu.brown.cs.student.main.SearchCSV;
 
 import edu.brown.cs.student.main.CreatorFromRowClasses.CreatorFromRow;
 import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;

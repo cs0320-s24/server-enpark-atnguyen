@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main;
+package edu.brown.cs.student.main.SearchCSV;
 
 import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
 import java.io.BufferedReader;
@@ -17,8 +17,8 @@ public final class Main {
    * @param args An array of command line arguments
    */
   public static void main(String[] args) {
-    if (args.length != 2) {
-      System.out.println("incorrect number of arguments");
+    if (args.length < 3 || args.length > 4) {
+      // handle incorrect arguments here
     }
     new Main(args).run();
   }
@@ -36,7 +36,7 @@ public final class Main {
     if (this.args[1].equals("true")) {
       hasHeaders = true;
     }
-    Utility utility = new Utility(this.args[0], hasHeaders);
+//    Utility utility = new Utility(this.args[0], hasHeaders);
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     System.out.println(
         "Welcome! Please enter your target word's column index or header, or 'all' to "
@@ -55,14 +55,14 @@ public final class Main {
           break;
         }
         try {
-          utility.run(toFind, column);
+//          utility.run(toFind, column);
         } catch (IllegalArgumentException e) {
           // goes to the next repl iteration if invalid column
           System.err.println(
               "Sorry, that column does not exist. Would you like to search all columns?");
           line = reader.readLine();
           if (line.toLowerCase().equals("yes")) {
-            utility.run(toFind, "all");
+//            utility.run(toFind, "all");
           }
         }
         System.out.println(
@@ -75,9 +75,9 @@ public final class Main {
               + "correct file path! \nRemember to include your file's sub-folders, or enter the "
               + "file path from content root.");
       System.exit(1);
-    } catch (FactoryFailureException e) {
-      System.err.println("Error creating row object");
-      System.exit(1);
+//    } catch (FactoryFailureException e) {
+//      System.err.println("Error creating row object");
+//      System.exit(1);
     } catch (IOException e) {
       System.err.println("Error reading input");
       System.exit(1);
