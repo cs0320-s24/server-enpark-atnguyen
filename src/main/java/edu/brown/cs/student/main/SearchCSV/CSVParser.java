@@ -31,8 +31,7 @@ public class CSVParser<T> implements Iterable<T> {
    * @param reader a reader object to read from.
    * @param creator a class that defines how to treat rows of the CSV.
    */
-  public CSVParser(Reader reader, CreatorFromRow<T> creator)
-      throws IOException, FactoryFailureException {
+  public CSVParser(Reader reader, CreatorFromRow<T> creator) {
     this.bReader = new BufferedReader(reader);
     this.creator = creator;
   }
