@@ -1,13 +1,19 @@
 package edu.brown.cs.student.main.SearchCSV;
 
-import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
+import static spark.Spark.after;
+
+import edu.brown.cs.student.main.Handlers.BroadbandHandler;
+import edu.brown.cs.student.main.Handlers.LoadHandler;
+import edu.brown.cs.student.main.Handlers.SearchHandler;
+import edu.brown.cs.student.main.Handlers.ViewHandler;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import spark.Spark;
 
 /** The Main class of our project. This is where execution begins. */
-public final class Main {
+public final class Server {
 
   private String[] args;
 
@@ -17,15 +23,27 @@ public final class Main {
    * @param args An array of command line arguments
    */
   public static void main(String[] args) {
-    if (args.length < 3 || args.length > 4) {
-      // handle incorrect arguments here
-    }
-    new Main(args).run();
+    int port = 3232;
+    Spark.port(port);
+
+
+    after(
+        (request, response) -> {
+          response.header("Access-Control-Allow-Origin", "*");
+          response.header("Access-Control-Allow-Methods", "*");
+        });
+
+    Spark.get("broadband", new BroadbandHandler());
+    Spark.get("load", new LoadHandler());
+    Spark.get("search", new SearchHandler());
+    Spark.get("view", new ViewHandler());
+    Spark.init();
+    Spark.awaitInitialization();
+
+    System.out.println("Server started at http://localhost:" + port);
+
   }
 
-  private Main(String[] args) {
-    this.args = args;
-  }
 
   /**
    * Starts the REPL that this Main class handles. Runs repeatedly until a user specifies 'quit' or

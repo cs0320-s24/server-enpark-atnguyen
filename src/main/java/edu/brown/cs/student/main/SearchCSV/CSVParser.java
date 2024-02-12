@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> Generic type so the CSVParser can return a generic List.
  */
-public class CSVParser<T> implements Iterable<T> {
+public class CSVParser<T>  {
 
   private BufferedReader bReader;
   private CreatorFromRow<T> creator;
@@ -64,17 +64,5 @@ public class CSVParser<T> implements Iterable<T> {
 
   public List<String> getCSVHeaders() {
     return this.csvHeaders;
-  }
-
-  @NotNull
-  @Override
-  public Iterator<T> iterator() {
-    try {
-      return this.parse(true).iterator();
-    } catch (FactoryFailureException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 }
