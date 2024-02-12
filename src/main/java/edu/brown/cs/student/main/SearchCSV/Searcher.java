@@ -8,8 +8,8 @@ import java.util.List;
 /** Searcher class that handles the searching of a CSV for a word. */
 public class Searcher {
 
-  private CSVParser parser;
-  private List<ArrayList<String>> csv;
+  private final CSVParser parser;
+  private final List<ArrayList<String>> csv;
 
   /**
    * Constructor for the Searcher class that defines the parser field.
@@ -33,7 +33,7 @@ public class Searcher {
    */
   public List<ArrayList<String>> search(String toFind, boolean hasHeaders) {
     List<ArrayList<String>> rowsWithVal = new ArrayList<>();
-    int numCols = 0;
+    int numCols;
     // find the number of expected columns based on the number of headers or the number of items in
     // the first row
     if (hasHeaders) {
@@ -109,14 +109,15 @@ public class Searcher {
     for (int i = 0; i < this.csv.size(); i++) { // for each row
       ArrayList<String> row = this.csv.get(i);
       if (numCols != this.findNumCols(row)) {
-            // TODO: add error/warning handling here for a malformed row
+        // TODO: add error/warning handling here for a malformed row
       }
       try {
         if (row.get(colIndex).toLowerCase().equals(toFind.toLowerCase())) {
           rowsWithVal.add(row);
         }
         //  skip the row and continue searching if this value doesn't exist
-      } catch (IndexOutOfBoundsException e) {}
+      } catch (IndexOutOfBoundsException e) {
+      }
     }
     return rowsWithVal;
   }
@@ -129,7 +130,7 @@ public class Searcher {
    */
   public int findNumCols(List<String> row) {
     int numCols = 0;
-    for (int i = 0; i < row.size(); i ++) {
+    for (int i = 0; i < row.size(); i++) {
       numCols++;
     }
     return numCols;
