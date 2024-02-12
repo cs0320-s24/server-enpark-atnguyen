@@ -31,8 +31,7 @@ public class Searcher {
    * @throws FactoryFailureException
    * @throws IOException
    */
-  public List<ArrayList<String>> search(String toFind, boolean hasHeaders)
-      throws FactoryFailureException, IOException {
+  public List<ArrayList<String>> search(String toFind, boolean hasHeaders) {
     List<ArrayList<String>> rowsWithVal = new ArrayList<>();
     int numCols = 0;
     // find the number of expected columns based on the number of headers or the number of items in
@@ -65,12 +64,12 @@ public class Searcher {
    * @param toFind - the String to look for.
    * @param column - the column to look in.
    * @param hasHeaders - whether the CSV has headers.
-   * @return - a List<ArrayList<String>> of rows with the desired word.
+   * @return - a List of rows with the desired word.
    * @throws FactoryFailureException
    * @throws IOException
    */
   public List<ArrayList<String>> search(String toFind, String column, boolean hasHeaders)
-      throws FactoryFailureException, IOException, IllegalArgumentException {
+      throws IllegalArgumentException {
 
     List<ArrayList<String>> rowsWithVal = new ArrayList<>();
     // want to keep the headers in to determine the header's column index
@@ -116,9 +115,8 @@ public class Searcher {
         if (row.get(colIndex).toLowerCase().equals(toFind.toLowerCase())) {
           rowsWithVal.add(row);
         }
-      } catch (IndexOutOfBoundsException e) {
-        continue; //  skip the row and continue searching if this value doesn't exist
-      }
+        //  skip the row and continue searching if this value doesn't exist
+      } catch (IndexOutOfBoundsException e) {}
     }
     return rowsWithVal;
   }

@@ -16,12 +16,12 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> Generic type so the CSVParser can return a generic List.
  */
-public class CSVParser<T> implements Iterable<T> {
+public class CSVParser<T> {
 
   private BufferedReader bReader;
   private CreatorFromRow<T> creator;
   private List<String> csvHeaders;
-  static final Pattern regexSplitCSVRow =
+  private static final Pattern regexSplitCSVRow =
       Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
 
   /**
@@ -61,19 +61,12 @@ public class CSVParser<T> implements Iterable<T> {
     return parsedCSV;
   }
 
+  /**
+   * Method that returns the parsed headers of the CSV.
+   * @return A new ArrayList that defensively copies this class's
+   * instance of csvHeaders
+   */
   public List<String> getCSVHeaders() {
-    return this.csvHeaders;
-  }
-
-  @NotNull
-  @Override
-  public Iterator<T> iterator() {
-    try {
-      return this.parse(true).iterator();
-    } catch (FactoryFailureException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return new ArrayList<>(this.csvHeaders);
   }
 }
