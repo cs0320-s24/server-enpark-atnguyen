@@ -16,7 +16,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> Generic type so the CSVParser can return a generic List.
  */
-public class CSVParser<T> {
+
+public class CSVParser<T>  {
 
   private BufferedReader bReader;
   private CreatorFromRow<T> creator;
