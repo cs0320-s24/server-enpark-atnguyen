@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CSVData implements CSVDatasource {
 
-  private List<ArrayList<String>> parsedCSV;
+  private List<ArrayList<String>> parsedCSV = new ArrayList<>();
   private ArrayList<String> csvHeaders;
 
   @Override
