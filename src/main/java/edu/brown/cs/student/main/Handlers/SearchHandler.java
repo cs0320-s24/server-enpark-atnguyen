@@ -37,12 +37,12 @@ public class SearchHandler implements Route {
 
     Map<String, Object> responseMap = new HashMap<>();
     if (column == null) {
-      responseMap.put("found", searcher.search(value, hasHeaders));
+      responseMap.put("data", searcher.search(value, hasHeaders));
     } else {
       try {
-        responseMap.put("found", searcher.search(value, column, hasHeaders));
+        responseMap.put("data", searcher.search(value, column, hasHeaders));
       } catch (IllegalArgumentException e) {
-        responseMap.put("result", "exception");
+        responseMap.put("result", "error_bad_request");
       }
     }
 

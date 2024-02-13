@@ -39,10 +39,13 @@ public class LoadHandler implements Route {
       } else {
         this.state.setCurrentCSV(parsedCSV);
       }
-      responseMap.put("CSV", this.state.getCurrentCSV());
       responseMap.put("result", "success");
-    } catch (FactoryFailureException | IOException e) {
-      responseMap.put("result", "exception");
+      responseMap.put("file", file);
+    } catch (FactoryFailureException e) {
+      responseMap.put("result", "error_parse");
+    }
+    catch(IOException e) {
+      responseMap.put("result", "error_datasource");
     }
 
     return responseMap;
