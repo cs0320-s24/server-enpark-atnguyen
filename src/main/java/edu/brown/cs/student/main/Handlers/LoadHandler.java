@@ -4,6 +4,7 @@ import edu.brown.cs.student.main.CreatorFromRowClasses.ArrayListCreator;
 import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
 import edu.brown.cs.student.main.SearchCSV.CSVParser;
 import edu.brown.cs.student.main.State.CSVDatasource;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class LoadHandler implements Route {
     try {
       CSVParser parser = new CSVParser<>(new FileReader(file), new ArrayListCreator());
       List<ArrayList<String>> parsedCSV = parser.parse();
+     // this.handleFileExceptions(file, responseMap);
       boolean headers = this.convertHeaderResponse(hasHeaders);
       if (headers) {
         this.state.setCurrentCSV(parsedCSV.subList(1, parsedCSV.size() - 1));
@@ -42,7 +44,8 @@ public class LoadHandler implements Route {
       responseMap.put("CSV", this.state.getCurrentCSV());
       responseMap.put("result", "success");
     } catch (FactoryFailureException | IOException e) {
-      responseMap.put("result", "exception");
+      this.handleFileExceptions(file, responseMap);
+    //  responseMap.put("result", "exception");
     }
 
     return responseMap;
@@ -56,6 +59,18 @@ public class LoadHandler implements Route {
     } else {
       return false;
       //   TODO: figure out error handling
+    }
+  }
+
+  private void handleFileExceptions(String file, Map<String, Object> responseMap) {
+    String rootPath = "data/";
+    File CSVfile = new File(file);
+    String rootDirectory = CSVfile.getAbsolutePath().substring(0, 5);
+    String parentDirectory = CSVfile.getAbsolutePath().substring(6,9);
+    if (!rootPath.equals(rootDirectory) || parentDirectory.equals("../")) {
+      responseMap.put("error_type", "file is not restricted to data directory");
+    } else if (!CSVfile.exists()) {
+      responseMap.put("error_type", "file was not found");
     }
   }
 }

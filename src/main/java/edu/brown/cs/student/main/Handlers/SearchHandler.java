@@ -24,7 +24,7 @@ public class SearchHandler implements Route {
     String column = request.queryParams("column");
     boolean hasHeaders = true;
     ArrayList<String> headers = this.state.getCSVHeaders();
-    if (headers.size() == 0) {
+    if (headers.isEmpty()) {
       hasHeaders = false;
     }
 
