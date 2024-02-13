@@ -8,17 +8,22 @@ import java.util.List;
 /** Searcher class that handles the searching of a CSV for a word. */
 public class Searcher {
 
-  private CSVParser parser;
-  private List<ArrayList<String>> csv;
+  private final List<ArrayList<String>> csv;
+  private final ArrayList<String> csvHeaders;
 
   /**
    * Constructor for the Searcher class that defines the parser field.
    *
    * @param parsedCSV - a CSV that has already been parsed into an ArrayList<String>
    */
-  public Searcher(CSVParser parser, List<ArrayList<String>> parsedCSV) {
-    this.parser = parser;
+  public Searcher(List<ArrayList<String>> parsedCSV, ArrayList<String> csvHeaders) {
     this.csv = parsedCSV;
+    this.csvHeaders = csvHeaders;
+  }
+
+  public Searcher(List<ArrayList<String>> parsedCSV) {
+    this.csv = parsedCSV;
+    this.csvHeaders = new ArrayList<>();
   }
 
   /**
@@ -33,11 +38,11 @@ public class Searcher {
    */
   public List<ArrayList<String>> search(String toFind, boolean hasHeaders) {
     List<ArrayList<String>> rowsWithVal = new ArrayList<>();
-    int numCols = 0;
+    int numCols;
     // find the number of expected columns based on the number of headers or the number of items in
     // the first row
     if (hasHeaders) {
-      numCols = findNumCols(this.parser.getCSVHeaders());
+      numCols = findNumCols(this.csvHeaders);
     } else {
       numCols = findNumCols(this.csv.get(0));
     }
@@ -75,10 +80,8 @@ public class Searcher {
     // want to keep the headers in to determine the header's column index
 
     int numCols = 0;
-    List<String> headers = new ArrayList<>();
     if (hasHeaders) {
-      headers = this.parser.getCSVHeaders();
-      numCols = findNumCols(headers);
+      numCols = findNumCols(this.csvHeaders);
     } else {
       numCols = findNumCols(this.csv.get(0));
     }
@@ -88,7 +91,7 @@ public class Searcher {
     for (int i = 0; i < numCols; i++) {
       // for header names
       if (hasHeaders) {
-        if (headers.get(i).toLowerCase().equals(column.toLowerCase())) {
+        if (this.csvHeaders.get(i).toLowerCase().equals(column.toLowerCase())) {
           colIndex = i;
           break;
         }
@@ -102,21 +105,22 @@ public class Searcher {
 
     // header was not found or index is invalid
     if (colIndex < 0) {
-      // TODO: add error handling for an invalid column
+      throw new IllegalArgumentException("invalid column");
     }
 
     // start at the second row if there's headers
     for (int i = 0; i < this.csv.size(); i++) { // for each row
       ArrayList<String> row = this.csv.get(i);
       if (numCols != this.findNumCols(row)) {
-            // TODO: add error/warning handling here for a malformed row
+        // TODO: add error/warning handling here for a malformed row
       }
       try {
         if (row.get(colIndex).toLowerCase().equals(toFind.toLowerCase())) {
           rowsWithVal.add(row);
         }
         //  skip the row and continue searching if this value doesn't exist
-      } catch (IndexOutOfBoundsException e) {}
+      } catch (IndexOutOfBoundsException e) {
+      }
     }
     return rowsWithVal;
   }
@@ -129,7 +133,7 @@ public class Searcher {
    */
   public int findNumCols(List<String> row) {
     int numCols = 0;
-    for (int i = 0; i < row.size(); i ++) {
+    for (int i = 0; i < row.size(); i++) {
       numCols++;
     }
     return numCols;
