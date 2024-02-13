@@ -14,7 +14,7 @@ import spark.Spark;
 public final class Server {
 
   private final CSVDatasource state;
-  static final int port = 3232;
+  static final int port = 3233;
 
   /**
    * The initial method called when execution begins.
