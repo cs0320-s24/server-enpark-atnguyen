@@ -24,6 +24,7 @@ public class SearchHandler implements Route {
     String value = request.queryParams("value");
     String column = request.queryParams("column");
     Map<String, Object> responseMap = new HashMap<>();
+
     if (this.state.getCurrentCSV().size() == 0) {
       responseMap.put("result", "error: no csv loaded");
     } else {
