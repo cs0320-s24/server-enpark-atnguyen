@@ -6,21 +6,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A class that parses a CSV into a List of generic objects.
  *
  * @param <T> Generic type so the CSVParser can return a generic List.
  */
+public class CSVParser<T> {
 
-public class CSVParser<T>  {
-
-  private BufferedReader bReader;
-  private CreatorFromRow<T> creator;
+  private final BufferedReader bReader;
+  private final CreatorFromRow<T> creator;
   private List<String> csvHeaders;
   private static final Pattern regexSplitCSVRow =
       Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
@@ -46,13 +43,9 @@ public class CSVParser<T>  {
    * @throws FactoryFailureException
    * @throws IOException
    */
-  public List<T> parse(boolean hasHeaders) throws FactoryFailureException, IOException {
+  public List<T> parse() throws FactoryFailureException, IOException {
     List<T> parsedCSV = new ArrayList<>();
     String line = this.bReader.readLine();
-    if (hasHeaders) { // read to next line if the CSV has column headers
-      this.csvHeaders = List.of(this.regexSplitCSVRow.split(line));
-      line = this.bReader.readLine();
-    }
     while (line != null) {
       List<String> row = List.of(this.regexSplitCSVRow.split(line));
       parsedCSV.add(this.creator.create(row));
@@ -64,8 +57,8 @@ public class CSVParser<T>  {
 
   /**
    * Method that returns the parsed headers of the CSV.
-   * @return A new ArrayList that defensively copies this class's
-   * instance of csvHeaders
+   *
+   * @return A new ArrayList that defensively copies this class's instance of csvHeaders
    */
   public List<String> getCSVHeaders() {
     return new ArrayList<>(this.csvHeaders);
