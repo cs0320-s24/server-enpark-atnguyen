@@ -6,6 +6,7 @@ import java.util.List;
 public class CSVData implements CSVDatasource {
 
   private List<ArrayList<String>> parsedCSV;
+  private ArrayList<String> csvHeaders;
 
   @Override
   public List<ArrayList<String>> getCurrentCSV() {
@@ -15,5 +16,15 @@ public class CSVData implements CSVDatasource {
   @Override
   public void setCurrentCSV(List<ArrayList<String>> parsedCSV) {
     this.parsedCSV = parsedCSV;
+  }
+
+  @Override
+  public ArrayList<String> getCSVHeaders() {
+    return new ArrayList<>(this.csvHeaders);
+  }
+
+  @Override
+  public void setCSVHeaders(ArrayList<String> headers) {
+    this.csvHeaders = headers;
   }
 }

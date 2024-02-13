@@ -31,12 +31,18 @@ public class LoadHandler implements Route {
 
     try {
       CSVParser parser = new CSVParser<>(new FileReader(file), new ArrayListCreator());
-      List<ArrayList<String>> parsedCSV = parser.parse(convertHeaderResponse(hasHeaders));
-      this.state.setCurrentCSV(parsedCSV);
-      responseMap.put("CSV", parsedCSV);
+      List<ArrayList<String>> parsedCSV = parser.parse();
+      boolean headers = this.convertHeaderResponse(hasHeaders);
+      if (headers) {
+        this.state.setCurrentCSV(parsedCSV.subList(1, parsedCSV.size() - 1));
+        this.state.setCSVHeaders(parsedCSV.get(0));
+      } else {
+        this.state.setCurrentCSV(parsedCSV);
+      }
+      responseMap.put("CSV", this.state.getCurrentCSV());
       responseMap.put("result", "success");
     } catch (FactoryFailureException | IOException e) {
-      responseMap.put("result", "error");
+      responseMap.put("result", "exception");
     }
 
     return responseMap;

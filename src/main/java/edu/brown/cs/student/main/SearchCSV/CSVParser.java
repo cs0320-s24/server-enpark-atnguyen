@@ -43,13 +43,9 @@ public class CSVParser<T> {
    * @throws FactoryFailureException
    * @throws IOException
    */
-  public List<T> parse(boolean hasHeaders) throws FactoryFailureException, IOException {
+  public List<T> parse() throws FactoryFailureException, IOException {
     List<T> parsedCSV = new ArrayList<>();
     String line = this.bReader.readLine();
-    if (hasHeaders) { // read to next line if the CSV has column headers
-      this.csvHeaders = List.of(this.regexSplitCSVRow.split(line));
-      line = this.bReader.readLine();
-    }
     while (line != null) {
       List<String> row = List.of(this.regexSplitCSVRow.split(line));
       parsedCSV.add(this.creator.create(row));

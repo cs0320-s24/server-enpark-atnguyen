@@ -13,7 +13,6 @@ import spark.Spark;
 /** The Main class of our project. This is where execution begins. */
 public final class Server {
 
-  private String[] args;
   private final CSVDatasource state;
   static final int port = 3232;
 
@@ -43,7 +42,7 @@ public final class Server {
 
     Spark.get("broadband", new BroadbandHandler());
     Spark.get("load", new LoadHandler(this.state));
-    Spark.get("search", new SearchHandler());
+    Spark.get("search", new SearchHandler(this.state));
     Spark.get("view", new ViewHandler());
     Spark.init();
     Spark.awaitInitialization();
