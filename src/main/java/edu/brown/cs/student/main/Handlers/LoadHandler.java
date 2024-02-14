@@ -2,9 +2,11 @@ package edu.brown.cs.student.main.Handlers;
 
 import edu.brown.cs.student.main.CreatorFromRowClasses.ArrayListCreator;
 import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
+import edu.brown.cs.student.main.JSONAdaptors.Serializer;
 import edu.brown.cs.student.main.SearchCSV.CSVParser;
 import edu.brown.cs.student.main.State.CSVDatasource;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import spark.Route;
 public class LoadHandler implements Route {
 
   private final CSVDatasource state;
+  private String file;
 
   public LoadHandler(CSVDatasource state) {
     this.state = state;
@@ -25,32 +28,35 @@ public class LoadHandler implements Route {
 
   @Override
   public Object handle(Request request, Response response) {
-    String file = request.queryParams("file");
+    this.file = request.queryParams("file");
     String hasHeaders = request.queryParams("headers");
     // object will be class that represents JSON
     Map<String, Object> responseMap = new HashMap<>();
 
     try {
-      CSVParser parser = new CSVParser<>(new FileReader(file), new ArrayListCreator());
+      // directly return the error message if the file is invalid
+      if(!this.checkValidFile(responseMap)) {
+        return new Serializer().createJSON(responseMap);
+      }
+      CSVParser parser = new CSVParser<>(new FileReader(this.file), new ArrayListCreator());
       List<ArrayList<String>> parsedCSV = parser.parse();
-     // this.handleFileExceptions(file, responseMap);
       boolean headers = this.convertHeaderResponse(hasHeaders);
       if (headers) {
         this.state.setCurrentCSV(parsedCSV.subList(1, parsedCSV.size() - 1));
         this.state.setCSVHeaders(parsedCSV.get(0));
       } else {
         this.state.setCurrentCSV(parsedCSV);
+        this.state.setCSVHeaders(new ArrayList<>());
       }
       responseMap.put("result", "success");
-      responseMap.put("file", file);
+      responseMap.put("file", this.file);
     } catch (FactoryFailureException e) {
       responseMap.put("result", "error_parse");
-    }
-    catch(IOException e) {
+    } catch(IOException e) {
       responseMap.put("result", "error_datasource");
     }
 
-    return responseMap;
+    return new Serializer().createJSON(responseMap);
   }
 
   private boolean convertHeaderResponse(String hasHeaders) {
@@ -64,15 +70,24 @@ public class LoadHandler implements Route {
     }
   }
 
-  private void handleFileExceptions(String file, Map<String, Object> responseMap) {
+  /**
+   * Method that checks if the requested file is in the correct data/ directory
+   * by adding data/ to the file if it is not already there, then making sure
+   * the next characters are not ../
+   * @param responseMap The map returned by handle() that holds the error message
+   *                    if the file is invalid.
+   * @return True if file is valid, false if not.
+   */
+  private boolean checkValidFile(Map<String, Object> responseMap) {
     String rootPath = "data/";
-    File CSVfile = new File(file);
-    String rootDirectory = CSVfile.getAbsolutePath().substring(0, 5);
-    String parentDirectory = CSVfile.getAbsolutePath().substring(6,9);
-    if (!rootPath.equals(rootDirectory) || parentDirectory.equals("../")) {
-      responseMap.put("error_type", "file is not restricted to data directory");
-    } else if (!CSVfile.exists()) {
-      responseMap.put("error_type", "file was not found");
+    if (!this.file.substring(0,5).equals(rootPath)) {
+      this.file = rootPath + this.file;
     }
+    // ensure user can't navigate up to a parent directory
+    if (this.file.substring(5,8).equals("../")) {
+      responseMap.put("result", "error_invalid_file_directory");
+      return false;
+    }
+    return true;
   }
 }

@@ -17,7 +17,7 @@ public final class Server {
 
   private final CSVDatasource CSVstate;
   private final BroadbandDatasource broadbandState;
-  static final int port = 3232;
+  static final int port = 3233;
 
   /**
    * The initial method called when execution begins.
@@ -47,7 +47,7 @@ public final class Server {
     Spark.get("broadband", new BroadbandHandler(this.broadbandState));
     Spark.get("load", new LoadHandler(this.CSVstate));
     Spark.get("search", new SearchHandler(this.CSVstate));
-    Spark.get("view", new ViewHandler());
+    Spark.get("view", new ViewHandler(this.CSVstate));
     Spark.init();
     Spark.awaitInitialization();
 
