@@ -1,5 +1,6 @@
 package edu.brown.cs.student.main.Handlers;
 
+import edu.brown.cs.student.main.JSONAdaptors.Serializer;
 import edu.brown.cs.student.main.SearchCSV.Searcher;
 import edu.brown.cs.student.main.State.CSVDatasource;
 import java.util.ArrayList;
@@ -24,8 +25,9 @@ public class SearchHandler implements Route {
     String value = request.queryParams("value");
     String column = request.queryParams("column");
     Map<String, Object> responseMap = new HashMap<>();
+
     if (this.state.getCurrentCSV().size() == 0) {
-      responseMap.put("result", "error: no csv loaded");
+      responseMap.put("result", "error_no_csv_loaded");
     } else {
       boolean hasHeaders = true;
       ArrayList<String> headers = this.state.getCSVHeaders();
@@ -35,13 +37,11 @@ public class SearchHandler implements Route {
 
       Searcher searcher;
       if (hasHeaders) {
-        System.out.println("here");
         searcher = new Searcher(this.state.getCurrentCSV(), headers);
       } else {
         searcher = new Searcher(this.state.getCurrentCSV());
       }
       if (column == null) {
-        System.out.println("hi");
         List<ArrayList<String>> foundRows = searcher.search(value, hasHeaders);
         if (foundRows.size() == 0) {
           responseMap.put("found", "value not found");
@@ -57,10 +57,11 @@ public class SearchHandler implements Route {
             responseMap.put("found", foundRows);
           }
         } catch (IllegalArgumentException e) {
-          responseMap.put("result", "exception");
+          responseMap.put("result", "error_bad_request");
         }
       }
     }
-    return responseMap;
+    return new Serializer().createJSON(responseMap);
   }
 }
+
