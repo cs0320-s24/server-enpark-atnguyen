@@ -4,6 +4,7 @@ import edu.brown.cs.student.main.SearchCSV.Searcher;
 import edu.brown.cs.student.main.State.CSVDatasource;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
@@ -22,30 +23,44 @@ public class SearchHandler implements Route {
   public Object handle(Request request, Response response) {
     String value = request.queryParams("value");
     String column = request.queryParams("column");
-    boolean hasHeaders = true;
-    ArrayList<String> headers = this.state.getCSVHeaders();
-    if (headers.isEmpty()) {
-      hasHeaders = false;
-    }
-
-    Searcher searcher;
-    if (hasHeaders) {
-      searcher = new Searcher(this.state.getCurrentCSV(), headers);
-    } else {
-      searcher = new Searcher(this.state.getCurrentCSV());
-    }
-
     Map<String, Object> responseMap = new HashMap<>();
-    if (column == null) {
-      responseMap.put("found", searcher.search(value, hasHeaders));
+    if (this.state.getCurrentCSV().size() == 0) {
+      responseMap.put("result", "error: no csv loaded");
     } else {
-      try {
-        responseMap.put("found", searcher.search(value, column, hasHeaders));
-      } catch (IllegalArgumentException e) {
-        responseMap.put("result", "exception");
+      boolean hasHeaders = true;
+      ArrayList<String> headers = this.state.getCSVHeaders();
+      if (headers.size() == 0) {
+        hasHeaders = false;
+      }
+
+      Searcher searcher;
+      if (hasHeaders) {
+        System.out.println("here");
+        searcher = new Searcher(this.state.getCurrentCSV(), headers);
+      } else {
+        searcher = new Searcher(this.state.getCurrentCSV());
+      }
+      if (column == null) {
+        System.out.println("hi");
+        List<ArrayList<String>> foundRows = searcher.search(value, hasHeaders);
+        if (foundRows.size() == 0) {
+          responseMap.put("found", "value not found");
+        } else {
+          responseMap.put("found", searcher.search(value, hasHeaders));
+        }
+      } else {
+        try {
+          List<ArrayList<String>> foundRows = searcher.search(value, column, hasHeaders);
+          if (foundRows.size() == 0) {
+            responseMap.put("found", "value not found");
+          } else {
+            responseMap.put("found", foundRows);
+          }
+        } catch (IllegalArgumentException e) {
+          responseMap.put("result", "exception");
+        }
       }
     }
-
     return responseMap;
   }
 }
