@@ -1,7 +1,10 @@
 package edu.brown.cs.student.main.State;
 
 
+import edu.brown.cs.student.main.Datasource.BroadbandData;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface BroadbandDatasource {
 
@@ -9,7 +12,7 @@ public interface BroadbandDatasource {
   String getState();
   void setCounty(String county);
   String getCounty();
-  String getBroadband(String state, String county) throws IOException;
+  List<List<String>> getBroadband(String state, String county) throws IOException;
 
 
 
