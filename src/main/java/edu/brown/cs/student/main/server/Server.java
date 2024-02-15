@@ -29,12 +29,20 @@ public final class Server {
     System.out.println("Server started; exiting main...");
   }
 
+  /**
+   * Constructor of Server that defines the shared state and calls on our port to start.
+   * @param CSVstate
+   * @param broadbandState
+   */
   private Server(CSVDatasource CSVstate, BroadbandDatasource broadbandState) {
     this.CSVstate = CSVstate;
     this.broadbandState = broadbandState;
     this.run();
   }
 
+  /**
+   * A method that is called at executions and starts the port 3232.
+   */
   private void run() {
     Spark.port(this.port);
 

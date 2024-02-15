@@ -1,20 +1,8 @@
 package edu.brown.cs.student.main.Handlers;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.Datasource.BroadbandData;
 import edu.brown.cs.student.main.Datasource.DataConvertor;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
 import edu.brown.cs.student.main.State.BroadbandDatasource;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,13 +10,27 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * A class that handles queries related to broadband.
+ */
 public class BroadbandHandler implements Route {
   private BroadbandDatasource state;
 
+  /**
+   * The constructor of the BroadbandHandler class that initializes the state.
+   * @param state
+   */
   public BroadbandHandler(BroadbandDatasource state) {
     this.state = state;
 
   }
+
+  /**
+   * A method that handles broadband queries and puts the API response into a JSON to be returned to the user.
+   * @param request: the request made by the user
+   * @param response
+   * @return: a JSON that holds the data to be shown to the user
+   */
   @Override
   public Object handle(Request request, Response response) {
     Map<String, Object> responseMap = new HashMap<>();
@@ -37,7 +39,6 @@ public class BroadbandHandler implements Route {
     // add requested parameters to the response map
     responseMap.put("state", state);
     responseMap.put("county", county);
-
     DataConvertor convertor = new DataConvertor(this.state);
     try {
       String state_code = convertor.convertState(state.toLowerCase());

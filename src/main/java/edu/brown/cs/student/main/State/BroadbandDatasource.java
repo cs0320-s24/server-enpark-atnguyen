@@ -1,9 +1,7 @@
 package edu.brown.cs.student.main.State;
 
 
-import edu.brown.cs.student.main.Datasource.BroadbandData;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface BroadbandDatasource {

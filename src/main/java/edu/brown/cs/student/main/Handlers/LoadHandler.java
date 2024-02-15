@@ -5,8 +5,6 @@ import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
 import edu.brown.cs.student.main.SearchCSV.CSVParser;
 import edu.brown.cs.student.main.State.CSVDatasource;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,15 +15,27 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * A class that handles queries related to loading a CSV.
+ */
 public class LoadHandler implements Route {
 
   private final CSVDatasource state;
   private String file;
-
+  /**
+   * The constructor of the LoadHandler class that initializes the shared state.
+   * @param state the shared state between load, search, and view
+   */
   public LoadHandler(CSVDatasource state) {
     this.state = state;
   }
 
+  /**
+   * A method that handles load queries and puts the loaded CSV into a JSON to be returned to the user.
+   * @param request the request made by the user
+   * @param response
+   * @return: a JSON that holds the data to be shown to the user
+   */
   @Override
   public Object handle(Request request, Response response) {
     this.file = request.queryParams("file");
@@ -59,6 +69,11 @@ public class LoadHandler implements Route {
     return new Serializer().createJSON(responseMap);
   }
 
+  /**
+   * A method that converts the user's response to if the file has headers or not into a boolean.
+   * @param hasHeaders the response to the headers parameter
+   * @return
+   */
   private boolean convertHeaderResponse(String hasHeaders) {
     if (hasHeaders.toLowerCase().equals("yes")) {
       return true;
