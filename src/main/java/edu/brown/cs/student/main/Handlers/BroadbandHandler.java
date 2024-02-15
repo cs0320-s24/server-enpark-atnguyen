@@ -33,14 +33,17 @@ public class BroadbandHandler implements Route {
    */
   @Override
   public Object handle(Request request, Response response) {
+    Map<String, Object> responseMap = new HashMap<>();
     String state = request.queryParams("state");
     String county = request.queryParams("county");
+    // add requested parameters to the response map
+    responseMap.put("state", state);
+    responseMap.put("county", county);
     DataConvertor convertor = new DataConvertor(this.state);
-    Map<String, Object> responseMap = new HashMap<>();
     try {
-      String state_code = convertor.convertState(state);
+      String state_code = convertor.convertState(state.toLowerCase());
       List<List<String>> data = this.state.getBroadband(state_code,
-          convertor.convertCounty(state_code, county));
+          convertor.convertCounty(state_code, county.toLowerCase()));
       responseMap.put("broadband", data);
     } catch (Exception e) {
       e.printStackTrace();
