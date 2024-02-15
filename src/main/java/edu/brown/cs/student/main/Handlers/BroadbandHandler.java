@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.Datasource.BroadbandData;
 import edu.brown.cs.student.main.Datasource.DataConvertor;
+import edu.brown.cs.student.main.JSONAdaptors.Serializer;
 import edu.brown.cs.student.main.State.BroadbandDatasource;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -29,32 +30,20 @@ public class BroadbandHandler implements Route {
 
   }
   @Override
-  public Object handle(Request request, Response response)
-      throws IOException, URISyntaxException, InterruptedException {
+  public Object handle(Request request, Response response) {
     String state = request.queryParams("state");
      String county = request.queryParams("county");
     DataConvertor convertor = new DataConvertor(this.state);
     Map<String, Object> responseMap = new HashMap<>();
-
-    Moshi moshi = new Moshi.Builder().build();
-    Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
-    JsonAdapter<BroadbandData> broadbandAdapter = moshi.adapter(BroadbandData.class);
-    JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
-
     try {
-      this.state.setState(state);
-      this.state.setCounty(county);
-      responseMap.put("state", convertor.convertData(state));
-
-      List<List<String>> data = this.state.getBroadband(convertor.convertData(state),this.state.getCounty());
-
-
+      String state_code = convertor.convertState(state);
+      List<List<String>> data = this.state.getBroadband(state_code,
+          convertor.convertCounty(state_code, county));
       responseMap.put("broadband", data);
     } catch (Exception e) {
       e.printStackTrace();
       responseMap.put("result", "error");
     }
-
-    return responseMap;
+    return new Serializer().createJSON(responseMap);
   }
 }

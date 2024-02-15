@@ -38,7 +38,6 @@ public class CSVParser<T> {
    * Method that parses the CSV and returns a List<T> of each row of the CSV. The create method
    * called by the CreatorFromRow object defines T.
    *
-   * @param hasHeaders - whether the CSV contains headers.
    * @return - List of each row object.
    * @throws FactoryFailureException
    * @throws IOException
