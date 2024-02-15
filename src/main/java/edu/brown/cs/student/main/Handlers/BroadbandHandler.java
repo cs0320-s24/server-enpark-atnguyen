@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.Datasource.BroadbandData;
 import edu.brown.cs.student.main.Datasource.DataConvertor;
+import edu.brown.cs.student.main.JSONAdaptors.Serializer;
 import edu.brown.cs.student.main.State.BroadbandDatasource;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -35,15 +36,14 @@ public class BroadbandHandler implements Route {
     DataConvertor convertor = new DataConvertor(this.state);
     Map<String, Object> responseMap = new HashMap<>();
     try {
-      List<List<String>> data = this.state.getBroadband(convertor.convertState(state),
-          convertor.convertCounty(state, county));
-      System.out.println(state + "2");
-      System.out.println(county + "2");
+      String state_code = convertor.convertState(state);
+      List<List<String>> data = this.state.getBroadband(state_code,
+          convertor.convertCounty(state_code, county));
       responseMap.put("broadband", data);
     } catch (Exception e) {
       e.printStackTrace();
       responseMap.put("result", "error");
     }
-    return responseMap;
+    return new Serializer().createJSON(responseMap);
   }
 }
