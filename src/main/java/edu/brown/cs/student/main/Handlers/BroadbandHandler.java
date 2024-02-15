@@ -29,32 +29,21 @@ public class BroadbandHandler implements Route {
 
   }
   @Override
-  public Object handle(Request request, Response response)
-      throws IOException, URISyntaxException, InterruptedException {
+  public Object handle(Request request, Response response) {
     String state = request.queryParams("state");
      String county = request.queryParams("county");
     DataConvertor convertor = new DataConvertor(this.state);
     Map<String, Object> responseMap = new HashMap<>();
-
-    Moshi moshi = new Moshi.Builder().build();
-    Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
-    JsonAdapter<BroadbandData> broadbandAdapter = moshi.adapter(BroadbandData.class);
-    JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
-
     try {
-      this.state.setState(state);
-      this.state.setCounty(county);
-      responseMap.put("state", convertor.convertData(state));
-
-      List<List<String>> data = this.state.getBroadband(convertor.convertData(state),this.state.getCounty());
-
-
+      List<List<String>> data = this.state.getBroadband(convertor.convertState(state),
+          convertor.convertCounty(state, county));
+      System.out.println(state + "2");
+      System.out.println(county + "2");
       responseMap.put("broadband", data);
     } catch (Exception e) {
       e.printStackTrace();
       responseMap.put("result", "error");
     }
-
     return responseMap;
   }
 }

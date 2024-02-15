@@ -56,13 +56,15 @@ public class CensusAPI implements BroadbandDatasource {
     return clientConnection;
   }
   private static List<List<String>> getBroadBandPercentage(String state, String county) throws IOException {
-    List<List<String>> list = new ArrayList<>();
-    URL requestURL = new URL("https", "api.census.gov", "/data/2010/dec/sf1?get=NAME&for=county:*&in=state:" + state);
+    URL requestURL = new URL("https", "api.census.gov", "/data/2021/acs/acs1/subject/variables?"
+        + "get=NAME,S2802_C03_022E&for=county:"
+        + county + "&in=state:"
+        + state);
     HttpURLConnection clientConnection = connect(requestURL);
     Moshi moshi = new Moshi.Builder().build();
     Type type = Types.newParameterizedType(List.class, List.class, String.class);
     JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
-    list = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+    List<List<String>> list = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
     clientConnection.disconnect();
     return list;
   }
