@@ -11,47 +11,58 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * A class that handles queries related to searching a CSV file.
+ */
 public class SearchHandler implements Route {
   private CSVDatasource state;
 
-  // main = Server class, which will make instances of handlers
-  // search handler make instance of searcher
+  /**
+   * The constructor of the SearchHandler class that initializes the shared state.
+   * @param state the shared state between load, search, and view
+   */
   public SearchHandler(CSVDatasource state) {
     this.state = state;
   }
 
+  /**
+   * A method that handles search queries and puts the rows that include the value being searched for into a JSON
+   * to be returned to the user.
+   * @param request the request made by the user
+   * @param response
+   * @return a JSON that holds the data to be shown to the user
+   */
   @Override
   public Object handle(Request request, Response response) {
     String value = request.queryParams("value");
     String column = request.queryParams("column");
     Map<String, Object> responseMap = new HashMap<>();
 
-    if (this.state.getCurrentCSV().size() == 0) {
+    if (this.state.getCurrentCSV().isEmpty()) { //verifies that the user loaded a CSV
       responseMap.put("result", "error_no_csv_loaded");
     } else {
       boolean hasHeaders = true;
-      ArrayList<String> headers = this.state.getCSVHeaders();
-      if (headers.size() == 0) {
+      ArrayList<String> headers = this.state.getCSVHeaders(); //if there are headers set the boolean accordingly
+      if (headers.isEmpty()) {
         hasHeaders = false;
       }
-
       Searcher searcher;
       if (hasHeaders) {
         searcher = new Searcher(this.state.getCurrentCSV(), headers);
       } else {
         searcher = new Searcher(this.state.getCurrentCSV());
       }
-      if (column == null) {
+      if (column == null) { //if the user did not specify a column to search by
         List<ArrayList<String>> foundRows = searcher.search(value, hasHeaders);
-        if (foundRows.size() == 0) {
+        if (foundRows.isEmpty()) {
           responseMap.put("found", "value not found");
         } else {
           responseMap.put("found", searcher.search(value, hasHeaders));
         }
-      } else {
+      } else { //search by a specific column
         try {
           List<ArrayList<String>> foundRows = searcher.search(value, column, hasHeaders);
-          if (foundRows.size() == 0) {
+          if (foundRows.isEmpty()) {
             responseMap.put("found", "value not found");
           } else {
             responseMap.put("found", foundRows);

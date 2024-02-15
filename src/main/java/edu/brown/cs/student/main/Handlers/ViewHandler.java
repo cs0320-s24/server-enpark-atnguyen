@@ -1,12 +1,7 @@
 package edu.brown.cs.student.main.Handlers;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.State.CSVData;
 import edu.brown.cs.student.main.State.CSVDatasource;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,23 +10,37 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * A class that handles queries related to viewing a CSV file.
+ */
 public class ViewHandler implements Route {
-
   private final CSVDatasource state;
+
+  /**
+   * The constructor of the ViewHandler class that initializes the shared state.
+   * @param state the shared state between load, search, and view
+   */
   public ViewHandler(CSVDatasource state) {
     this.state = state;
   }
 
+  /**
+   * A method that handles view queries and puts the CSV file wanting to be viewed into a JSON to be
+   * returned to the user.
+   * @param request the request made by the user
+   * @param response
+   * @return a JSON that holds the data to be shown to the user
+   */
   @Override
   public Object handle(Request request, Response response) {
     Map<String, Object> responseMap = new HashMap<>();
     List<ArrayList<String>> csv = this.state.getCurrentCSV();
-    if (csv.size() == 0) {
+    if (csv.isEmpty()) {
       responseMap.put("result", "error_no_csv_loaded");
     }
     else {
       ArrayList<String> headers = this.state.getCSVHeaders();
-      if (headers.size() > 0) {
+      if (!headers.isEmpty()) {
         csv.add(0, headers);
       }
       responseMap.put("result", "success");
