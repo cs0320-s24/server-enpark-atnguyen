@@ -31,12 +31,15 @@ public class DataConvertor {
 
   public DataConvertor(BroadbandDatasource state) {
     this.state = state;
-
-
   }
-  public String convertData(String state) {
-    HashMap<String, String> map = this.createMap();
+  public String convertState(String state) {
+    HashMap<String, String> map = this.createStateMap();
     return map.get(state);
+  }
+
+  public String convertCounty(String state, String county) {
+    HashMap<String, String> map = this.createCountyMap(state);
+    return map.get(county);
   }
   private static HttpURLConnection connect(URL requestURL) throws IOException {
     URLConnection urlConnection = requestURL.openConnection();
@@ -50,8 +53,7 @@ public class DataConvertor {
     return clientConnection;
   }
 
-  public List<List<String>> getCodes() throws IOException {
-    List<List<String>> list = new ArrayList<>();
+  public List<List<String>> getStateCodes() throws IOException {
     HashMap<String, String> map = new HashMap<>();
     URL requestURL = new URL("https", "api.census.gov",
           "/data/2010/dec/sf1?get=NAME&for=state:*");
@@ -59,16 +61,26 @@ public class DataConvertor {
     Moshi moshi = new Moshi.Builder().build();
     Type type = Types.newParameterizedType(List.class, List.class, String.class);
     JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
-    list = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+    List<List<String>> list = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
     clientConnection.disconnect();
-
     return list;
-
   }
-  public HashMap<String, String> createMap() {
+
+  private List<List<String>> getCountyCodes(String state) throws IOException {
+    URL requestURL = new URL("https", "api.census.gov",
+        "/data/2010/dec/sf1?get=NAME&for=county:*&in=state:" + state);
+    HttpURLConnection clientConnection = connect(requestURL);
+    Moshi moshi = new Moshi.Builder().build();
+    Type type = Types.newParameterizedType(List.class, List.class, String.class);
+    JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
+    List<List<String>> list = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+    clientConnection.disconnect();
+    return list;
+  }
+  public HashMap<String, String> createStateMap() {
     HashMap<String, String> map = new HashMap<>();
     try {
-      List<List<String>> list = this.getCodes();
+      List<List<String>> list = this.getStateCodes();
       for (List<String> row : list) {
         String state = row.get(0);
         String code = row.get(1);
@@ -80,5 +92,22 @@ public class DataConvertor {
     }
     return map;
   }
+
+  public HashMap<String, String> createCountyMap(String state) {
+    HashMap<String, String> map = new HashMap<>();
+    try {
+      List<List<String>> list = this.getCountyCodes(state);
+      for (List<String> row : list) {
+        String county = row.get(0);
+        String code = row.get(1);
+        map.put(county, code);
+      }
+      return map;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return map;
+  }
+
 
 }
