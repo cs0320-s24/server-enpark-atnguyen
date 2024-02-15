@@ -22,9 +22,17 @@ public class SearchHandler implements Route {
 
   @Override
   public Object handle(Request request, Response response) {
+    Map<String, Object> responseMap = new HashMap<>();
     String value = request.queryParams("value");
     String column = request.queryParams("column");
-    Map<String, Object> responseMap = new HashMap<>();
+    // put requested parameters into the response map
+    responseMap.put("requested_value", value);
+    if (column != null) {
+      responseMap.put("requested_column", column);
+    }
+    else {
+      responseMap.put("requested_column", "none_specified");
+    }
 
     if (this.state.getCurrentCSV().size() == 0) {
       responseMap.put("result", "error_no_csv_loaded");
@@ -41,6 +49,7 @@ public class SearchHandler implements Route {
       } else {
         searcher = new Searcher(this.state.getCurrentCSV());
       }
+
       if (column == null) {
         List<ArrayList<String>> foundRows = searcher.search(value, hasHeaders);
         if (foundRows.size() == 0) {
@@ -56,6 +65,7 @@ public class SearchHandler implements Route {
           } else {
             responseMap.put("found", foundRows);
           }
+          // thrown when an invalid column is entered
         } catch (IllegalArgumentException e) {
           responseMap.put("result", "error_bad_request");
         }
