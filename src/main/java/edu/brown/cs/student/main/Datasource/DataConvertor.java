@@ -84,7 +84,7 @@ public class DataConvertor {
       for (List<String> row : list) {
         String state = row.get(0);
         String code = row.get(1);
-        map.put(state, code);
+        map.put(state.toLowerCase(), code);
       }
       return map;
     } catch (IOException e) {
@@ -99,8 +99,8 @@ public class DataConvertor {
       List<List<String>> list = this.getCountyCodes(state);
       for (List<String> row : list) {
         String county = row.get(0);
-        String code = row.get(1);
-        map.put(county, code);
+        String code = row.get(2);
+        map.put(county.toLowerCase().split(" ")[0], code);
       }
       return map;
     } catch (IOException e) {
