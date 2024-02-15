@@ -40,9 +40,9 @@ public class BroadbandHandler implements Route {
 
     DataConvertor convertor = new DataConvertor(this.state);
     try {
-      String state_code = convertor.convertState(state);
+      String state_code = convertor.convertState(state.toLowerCase());
       List<List<String>> data = this.state.getBroadband(state_code,
-          convertor.convertCounty(state_code, county));
+          convertor.convertCounty(state_code, county.toLowerCase()));
       responseMap.put("broadband", data);
     } catch (Exception e) {
       e.printStackTrace();
