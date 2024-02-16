@@ -9,13 +9,29 @@ import java.util.List;
  */
 public interface CSVDatasource {
 
+  /**
+   * Gets the current CSV
+   * @return
+   */
   List<ArrayList<String>> getCurrentCSV();
   //      throws DatasourceException, IllegalArgumentException;
 
+  /**
+   * Sets the current CSV
+   * @param parsedCSV
+   */
   void setCurrentCSV(List<ArrayList<String>> parsedCSV);
 
+  /**
+   * Gets the CSV headers
+   * @return
+   */
   ArrayList<String> getCSVHeaders();
   //      throws DatasourceException, IllegalArgumentException;
 
+  /**
+   * Sets the CSV headers
+   * @param headers
+   */
   void setCSVHeaders(ArrayList<String> headers);
 }
