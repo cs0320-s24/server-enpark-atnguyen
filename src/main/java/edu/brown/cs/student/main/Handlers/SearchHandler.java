@@ -29,8 +29,7 @@ public class SearchHandler implements Route {
     responseMap.put("requested_value", value);
     if (column != null) {
       responseMap.put("requested_column", column);
-    }
-    else {
+    } else {
       responseMap.put("requested_column", "none_specified");
     }
 
@@ -74,4 +73,3 @@ public class SearchHandler implements Route {
     return new Serializer().createJSON(responseMap);
   }
 }
-

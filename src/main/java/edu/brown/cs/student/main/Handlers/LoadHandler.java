@@ -5,8 +5,6 @@ import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
 import edu.brown.cs.student.main.SearchCSV.CSVParser;
 import edu.brown.cs.student.main.State.CSVDatasource;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ public class LoadHandler implements Route {
 
     try {
       // directly return the error message if the file is invalid
-      if(!this.checkValidFile(responseMap)) {
+      if (!this.checkValidFile(responseMap)) {
         return new Serializer().createJSON(responseMap);
       }
       CSVParser parser = new CSVParser<>(new FileReader(this.file), new ArrayListCreator());
@@ -52,7 +50,7 @@ public class LoadHandler implements Route {
       responseMap.put("file", this.file);
     } catch (FactoryFailureException e) {
       responseMap.put("result", "error_parse");
-    } catch(IOException e) {
+    } catch (IOException e) {
       responseMap.put("result", "error_datasource");
     }
 
@@ -71,20 +69,20 @@ public class LoadHandler implements Route {
   }
 
   /**
-   * Method that checks if the requested file is in the correct data/ directory
-   * by adding data/ to the file if it is not already there, then making sure
-   * the next characters are not ../
-   * @param responseMap The map returned by handle() that holds the error message
-   *                    if the file is invalid.
+   * Method that checks if the requested file is in the correct data/ directory by adding data/ to
+   * the file if it is not already there, then making sure the next characters are not ../
+   *
+   * @param responseMap The map returned by handle() that holds the error message if the file is
+   *     invalid.
    * @return True if file is valid, false if not.
    */
   private boolean checkValidFile(Map<String, Object> responseMap) {
     String rootPath = "data/";
-    if (!this.file.substring(0,5).equals(rootPath)) {
+    if (!this.file.substring(0, 5).equals(rootPath)) {
       this.file = rootPath + this.file;
     }
     // ensure user can't navigate up to a parent directory
-    if (this.file.substring(5,8).equals("../")) {
+    if (this.file.substring(5, 8).equals("../")) {
       responseMap.put("result", "error_invalid_file_directory");
       return false;
     }
