@@ -13,24 +13,50 @@ import java.util.HashMap;
 import java.util.List;
 import okio.Buffer;
 
+/**
+ * A class that handles querying the Census API more to obtain the codes corresponding to each state
+ * and county.
+ */
 public class DataConvertor {
 
   private BroadbandDatasource state;
 
+  /**
+   * The constructor of DataConvertor that defines the shared state.
+   * @param state
+   */
   public DataConvertor(BroadbandDatasource state) {
     this.state = state;
   }
 
+  /**
+   * A method that converts a state to its code.
+   * @param state the state to be converted
+   * @return the code of that state
+   */
   public String convertState(String state) {
     HashMap<String, String> map = this.createStateMap();
     return map.get(state);
   }
 
+  /**
+   * A method that converts a county to its code.
+   * @param state the state the county belongs in
+   * @param county the county to be converted
+   * @return the code of that county
+   */
   public String convertCounty(String state, String county) {
     HashMap<String, String> map = this.createCountyMap(state);
     return map.get(county);
   }
 
+  /**
+   * Private helper method; throws IOException so different callers
+   * can handle differently if needed.
+   * @param requestURL
+   * @return
+   * @throws IOException
+   */
   private static HttpURLConnection connect(URL requestURL) throws IOException {
     URLConnection urlConnection = requestURL.openConnection();
     if (!(urlConnection instanceof HttpURLConnection)) {
@@ -42,8 +68,12 @@ public class DataConvertor {
     return clientConnection;
   }
 
-  public List<List<String>> getStateCodes() throws IOException {
-    HashMap<String, String> map = new HashMap<>();
+  /**
+   * A method that gets the list of state codes by ACS and deserializes it into a list that we can use.
+   * @return a list of a list of strings that contain the states and their codes
+   * @throws IOException
+   */
+  private List<List<String>> getStateCodes() throws IOException {
     URL requestURL = new URL("https", "api.census.gov", "/data/2010/dec/sf1?get=NAME&for=state:*");
     HttpURLConnection clientConnection = connect(requestURL);
     Moshi moshi = new Moshi.Builder().build();
@@ -55,6 +85,12 @@ public class DataConvertor {
     return list;
   }
 
+  /**
+   * A method that gets the list of county codes in a state by ACS and deserializes it into a list that we can use.
+   * @param state the state where the county exists
+   * @return a list of a list of strings that contain the states and their codes
+   * @throws IOException
+   */
   private List<List<String>> getCountyCodes(String state) throws IOException {
     URL requestURL =
         new URL(
@@ -71,7 +107,11 @@ public class DataConvertor {
     return list;
   }
 
-  public HashMap<String, String> createStateMap() {
+  /**
+   * A method that creates a hashmap from the list of states and their codes
+   * @return a hashmap that maps each state to their code
+   */
+  private HashMap<String, String> createStateMap() {
     HashMap<String, String> map = new HashMap<>();
     try {
       List<List<String>> list = this.getStateCodes();
@@ -87,7 +127,12 @@ public class DataConvertor {
     return map;
   }
 
-  public HashMap<String, String> createCountyMap(String state) {
+  /**
+   * A method that creates a hashmap from the list of counties in a state and their codes
+   * @param state the state where the county exists in
+   * @return a hashmap that maps each county to their code
+   */
+  private HashMap<String, String> createCountyMap(String state) {
     HashMap<String, String> map = new HashMap<>();
     try {
       List<List<String>> list = this.getCountyCodes(state);

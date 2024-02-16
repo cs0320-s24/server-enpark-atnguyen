@@ -127,11 +127,4 @@ public class LoadHandler implements Route {
     return true;
   }
 
-  private boolean fileError(String file, Map<String, Object> map) {
-    if (file.isEmpty()) {
-      map.put("result", "error_bad_request");
-      return true;
-    }
-    return false;
-  }
 }
