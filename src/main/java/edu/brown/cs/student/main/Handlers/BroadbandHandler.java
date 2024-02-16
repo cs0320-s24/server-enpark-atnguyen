@@ -69,10 +69,4 @@ public class BroadbandHandler implements Route {
     DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     return dateAndTime.format(format);
   }
-
-  private void putError(String state, Map<String, Object> map) {
-    if (state == null) {
-      map.put("result", "no state");
-    }
-  }
 }
