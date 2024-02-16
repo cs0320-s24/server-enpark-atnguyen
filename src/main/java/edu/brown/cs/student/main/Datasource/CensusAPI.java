@@ -12,13 +12,32 @@ import java.net.URLConnection;
 import java.util.List;
 import okio.Buffer;
 
+/**
+ * A datasource for broadband queries via Census API. This class uses the real API to return
+ * results back to the proxy server.
+ */
 public class CensusAPI implements BroadbandDatasource {
 
+  /**
+   * A method that returns the response given by ACS and properly uses the data in the cache
+   * or loads it into the cache if it isn't there.
+   * @param state the state to be searches
+   * @param county the county to be searched
+   * @return the broadband data of the state and county
+   * @throws IOException
+   */
   @Override
   public BroadbandData getBroadband(String state, String county) throws IOException {
     return getBroadBandPercentage(state, county);
   }
 
+  /**
+   * Private helper method; throws IOException so different callers
+   * can handle differently if needed.
+   * @param requestURL
+   * @return
+   * @throws IOException
+   */
   private static HttpURLConnection connect(URL requestURL) throws IOException {
     URLConnection urlConnection = requestURL.openConnection();
     //    if(! (urlConnection instanceof HttpURLConnection))
@@ -33,6 +52,13 @@ public class CensusAPI implements BroadbandDatasource {
     return clientConnection;
   }
 
+  /**
+   * A method that interacts with the real API to get the data of the requested state and county.
+   * @param state the state to be searched
+   * @param county the county to be searched
+   * @return the data converted into a BroadbandData record
+   * @throws IOException
+   */
   private static BroadbandData getBroadBandPercentage(String state, String county)
       throws IOException {
     URL requestURL =
