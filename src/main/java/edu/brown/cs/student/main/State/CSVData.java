@@ -3,6 +3,10 @@ package edu.brown.cs.student.main.State;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class that represents the shared state between load, search, and view. It holds the CSV file's
+ * data.
+ */
 public class CSVData implements CSVDatasource {
 
   private List<ArrayList<String>> parsedCSV = new ArrayList<>();

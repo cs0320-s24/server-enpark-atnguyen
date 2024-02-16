@@ -53,13 +53,4 @@ public class CSVParser<T> {
     this.bReader.close();
     return parsedCSV;
   }
-
-  /**
-   * Method that returns the parsed headers of the CSV.
-   *
-   * @return A new ArrayList that defensively copies this class's instance of csvHeaders
-   */
-  public List<String> getCSVHeaders() {
-    return new ArrayList<>(this.csvHeaders);
-  }
 }

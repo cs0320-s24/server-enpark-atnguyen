@@ -13,6 +13,8 @@ import java.util.List;
 import okio.Buffer;
 
 public class CensusAPI implements BroadbandDatasource {
+<<<<<<< HEAD
+=======
   private String state;
   private String county;
 
@@ -20,24 +22,10 @@ public class CensusAPI implements BroadbandDatasource {
   public void setState(String state) {
     this.state = state;
   }
+>>>>>>> eleanor
 
   @Override
-  public String getState() {
-    return this.state;
-  }
-
-  @Override
-  public void setCounty(String county) {
-    this.county = county;
-  }
-
-  @Override
-  public String getCounty() {
-    return this.state;
-  }
-
-  @Override
-  public List<List<String>> getBroadband(String state, String county) throws IOException {
+  public BroadbandData getBroadband(String state, String county) throws IOException {
     return getBroadBandPercentage(state, county);
   }
 
@@ -55,7 +43,11 @@ public class CensusAPI implements BroadbandDatasource {
     return clientConnection;
   }
 
+<<<<<<< HEAD
+  private static BroadbandData getBroadBandPercentage(String state, String county)
+=======
   private static List<List<String>> getBroadBandPercentage(String state, String county)
+>>>>>>> eleanor
       throws IOException {
     URL requestURL =
         new URL(
@@ -68,11 +60,16 @@ public class CensusAPI implements BroadbandDatasource {
                 + state);
     HttpURLConnection clientConnection = connect(requestURL);
     Moshi moshi = new Moshi.Builder().build();
-    Type type = Types.newParameterizedType(List.class, List.class, String.class);
+    Type type = Types.newParameterizedType(List.class, List.class);
     JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
+<<<<<<< HEAD
+    List<List<String>> data =
+=======
     List<List<String>> list =
+>>>>>>> eleanor
         adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
     clientConnection.disconnect();
-    return list;
+    return new BroadbandData(
+        data.get(1).get(0), data.get(1).get(1), data.get(1).get(2), data.get(1).get(3));
   }
 }
