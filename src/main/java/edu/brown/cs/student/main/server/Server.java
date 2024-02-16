@@ -2,7 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import edu.brown.cs.student.main.ACSData.Caching.Cache;
+import edu.brown.cs.student.main.ACSData.Caching.Caching;
 import edu.brown.cs.student.main.ACSData.CensusAPI;
 import edu.brown.cs.student.main.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Handlers.LoadHandler;
@@ -26,7 +26,7 @@ public final class Server {
    * @param args An array of command line arguments
    */
   public static void main(String[] args) {
-    new Server(new CSVData(), new Cache(new CensusAPI(), 50, 5));
+    new Server(new CSVData(), new Caching(new CensusAPI(), 50, 5));
   }
 
   /**

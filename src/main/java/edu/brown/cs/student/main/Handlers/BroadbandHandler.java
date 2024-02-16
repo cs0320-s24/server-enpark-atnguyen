@@ -66,6 +66,7 @@ public class BroadbandHandler implements Route {
 
   /**
    * A helper method that gets the time of when the query was made
+   *
    * @return the time in a string
    */
   private String getTime() {

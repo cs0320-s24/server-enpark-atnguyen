@@ -1,25 +1,29 @@
 package edu.brown.cs.student.main.ACSData.Caching;
 
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.Cache;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A class that handles caching functionality for ACS queries by implementing the BroadbandDataSource
- * interface.
+ * A class that handles caching functionality for ACS queries by implementing the
+ * BroadbandDataSource interface.
  */
-public class Cache implements BroadbandDatasource {
+public class Caching implements BroadbandDatasource {
   private BroadbandDatasource toWrap;
-  private com.google.common.cache.Cache<String,BroadbandData> cache;
+  private Cache<String, BroadbandData> cache;
 
   /**
-   * The caching class constructor which defines the passed in BroadbandDataSource, the size of the cache,
-   * and the time limit for cache expiration.
+   * The caching class constructor which defines the passed in BroadbandDataSource, the size of the
+   * cache, and the time limit for cache expiration.
+   *
    * @param toWrap a class that implements BroadbandDatasource
    * @param size size of the cache
    * @param durationInMinutes amount of time before cache expires
    */
-  public Cache(BroadbandDatasource toWrap, int size, int durationInMinutes) {
+
+  public Caching(BroadbandDatasource toWrap, int size, int durationInMinutes) {
     this.toWrap = toWrap;
     this.cache =
         CacheBuilder.newBuilder()
@@ -30,8 +34,9 @@ public class Cache implements BroadbandDatasource {
   }
 
   /**
-   * A method that returns the response given by ACS and properly uses the data in the cache
-   * or loads it into the cache if it isn't there.
+   * A method that returns the response given by ACS and properly uses the data in the cache or
+   * loads it into the cache if it isn't there.
+   *
    * @param state the state to be searched
    * @param county the county to be searched
    * @return the broadband data of the state and county
@@ -41,9 +46,20 @@ public class Cache implements BroadbandDatasource {
   public BroadbandData getBroadband(String state, String county) throws IOException {
     BroadbandData data = this.cache.getIfPresent(state + county);
     if (data == null) {
+      data = toWrap.getBroadband(state, county);
       data = this.toWrap.getBroadband(state,county);
       this.cache.put(state + county, data);
     }
     return data;
+  }
+
+
+  public boolean isValueInCache(String state, String county) {
+    BroadbandData data = this.cache.getIfPresent(state + county);
+    if (data == null) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
