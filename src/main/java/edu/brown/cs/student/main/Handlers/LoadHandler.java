@@ -28,17 +28,29 @@ public class LoadHandler implements Route {
   public Object handle(Request request, Response response) {
     this.file = request.queryParams("file");
     String hasHeaders = request.queryParams("headers");
-    // object will be class that represents JSON
     Map<String, Object> responseMap = new HashMap<>();
+
+    // if file isn't entered, return with an error
+    if (this.file == null) {
+      responseMap.put("result", "error_bad_request");
+      return new Serializer().createJSON(responseMap);
+    }
+    // if headers isn't specified, default to no headers
+    if (hasHeaders == null) {
+      hasHeaders = "no";
+    }
 
     try {
       // directly return the error message if the file is invalid
       if (!this.checkValidFile(responseMap)) {
         return new Serializer().createJSON(responseMap);
       }
+
+      // parse loaded csv so search and view don't have to parse again
       CSVParser parser = new CSVParser<>(new FileReader(this.file), new ArrayListCreator());
       List<ArrayList<String>> parsedCSV = parser.parse();
       boolean headers = this.convertHeaderResponse(hasHeaders);
+      // set the shared state's csv and header variables
       if (headers) {
         this.state.setCurrentCSV(parsedCSV.subList(1, parsedCSV.size() - 1));
         this.state.setCSVHeaders(parsedCSV.get(0));
@@ -48,10 +60,13 @@ public class LoadHandler implements Route {
       }
       responseMap.put("result", "success");
       responseMap.put("file", this.file);
+
     } catch (FactoryFailureException e) {
       responseMap.put("result", "error_parse");
     } catch (IOException e) {
       responseMap.put("result", "error_datasource");
+    } catch (IllegalArgumentException e) {
+      responseMap.put("result", "error_bad_request");
     }
 
     return new Serializer().createJSON(responseMap);
@@ -63,8 +78,7 @@ public class LoadHandler implements Route {
     } else if (hasHeaders.toLowerCase().equals("no")) {
       return false;
     } else {
-      return false;
-      //   TODO: figure out error handling
+      throw new IllegalArgumentException();
     }
   }
 
