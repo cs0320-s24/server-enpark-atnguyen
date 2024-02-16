@@ -38,9 +38,6 @@ public class BroadbandHandler implements Route {
     Map<String, Object> responseMap = new HashMap<>();
     String state = request.queryParams("state");
     String county = request.queryParams("county");
-
-    // add requested parameters to the response map
-
     DataConvertor convertor = new DataConvertor(this.state);
     try {
       String state_code = convertor.convertState(state.toLowerCase());
@@ -58,6 +55,10 @@ public class BroadbandHandler implements Route {
     return new Serializer().createJSON(responseMap);
   }
 
+  /**
+   * A helper method that gets the time of when the query was made
+   * @return the time in a string
+   */
   private String getTime() {
     LocalDateTime dateAndTime = LocalDateTime.now();
     DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
