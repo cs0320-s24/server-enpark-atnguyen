@@ -24,7 +24,7 @@ public class Serializer {
    * @param map
    * @return a String with the data from map in JSON form
    */
-  public String createJSON(Map<String, Object> map) {
+  public String serialize(Map<String, Object> map) {
     return this.adapter.toJson(map);
   }
 }

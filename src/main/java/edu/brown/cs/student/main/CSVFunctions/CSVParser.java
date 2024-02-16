@@ -1,7 +1,7 @@
-package edu.brown.cs.student.main.SearchCSV;
+package edu.brown.cs.student.main.CSVFunctions;
 
-import edu.brown.cs.student.main.CreatorFromRowClasses.CreatorFromRow;
-import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
+import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.CreatorFromRow;
+import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.FactoryFailureException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;

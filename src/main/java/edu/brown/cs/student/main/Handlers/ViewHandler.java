@@ -1,7 +1,7 @@
 package edu.brown.cs.student.main.Handlers;
 
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.State.CSVDatasource;
+import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +38,7 @@ public class ViewHandler implements Route {
     if (csv.isEmpty()) {
       responseMap.put("result", "error_no_csv_loaded");
     } else {
+      // add row of headers to the csv if there are headers
       ArrayList<String> headers = this.state.getCSVHeaders();
       if (!headers.isEmpty()) {
         csv.add(0, headers);
@@ -45,6 +46,6 @@ public class ViewHandler implements Route {
       responseMap.put("result", "success");
       responseMap.put("data", csv);
     }
-    return new Serializer().createJSON(responseMap);
+    return new Serializer().serialize(responseMap);
   }
 }
