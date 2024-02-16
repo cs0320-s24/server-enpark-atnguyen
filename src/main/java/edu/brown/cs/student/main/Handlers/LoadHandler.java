@@ -15,20 +15,35 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/** A class that handles queries related to loading a CSV. */
 public class LoadHandler implements Route {
 
   private final CSVDatasource state;
   private String file;
-
+  /**
+   * The constructor of the LoadHandler class that initializes the shared state.
+   *
+   * @param state the shared state between load, search, and view
+   */
   public LoadHandler(CSVDatasource state) {
     this.state = state;
   }
 
+  /**
+   * A method that handles load queries and puts the loaded CSV into a JSON to be returned to the
+   * user.
+   *
+   * @param request the request made by the user
+   * @param response
+   * @return: a JSON that holds the data to be shown to the user
+   */
   @Override
   public Object handle(Request request, Response response) {
     this.file = request.queryParams("file");
     String hasHeaders = request.queryParams("headers");
+
     Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("header", hasHeaders);
 
     // if file isn't entered, return with an error
     if (this.file == null) {
@@ -72,7 +87,16 @@ public class LoadHandler implements Route {
     return new Serializer().createJSON(responseMap);
   }
 
+  /**
+   * A method that converts the user's response to if the file has headers or not into a boolean.
+   *
+   * @param hasHeaders the response to the headers parameter
+   * @return
+   */
   private boolean convertHeaderResponse(String hasHeaders) {
+    if (hasHeaders == null || hasHeaders.isEmpty()) {
+      return false;
+    }
     if (hasHeaders.toLowerCase().equals("yes")) {
       return true;
     } else if (hasHeaders.toLowerCase().equals("no")) {
@@ -101,5 +125,13 @@ public class LoadHandler implements Route {
       return false;
     }
     return true;
+  }
+
+  private boolean fileError(String file, Map<String, Object> map) {
+    if (file.isEmpty()) {
+      map.put("result", "error_bad_request");
+      return true;
+    }
+    return false;
   }
 }

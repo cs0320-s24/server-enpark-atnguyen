@@ -12,15 +12,21 @@ public class Searcher {
   private final ArrayList<String> csvHeaders;
 
   /**
-   * Constructor for the Searcher class that defines the parser field.
+   * Constructor that is used when searching through a specific header.
    *
-   * @param parsedCSV - a CSV that has already been parsed into an ArrayList<String>
+   * @param parsedCSV a CSV that has already been parsed into an ArrayList<String>
+   * @param csvHeaders a list containing the headers
    */
   public Searcher(List<ArrayList<String>> parsedCSV, ArrayList<String> csvHeaders) {
     this.csv = parsedCSV;
     this.csvHeaders = csvHeaders;
   }
 
+  /**
+   * Constructor that is used when searching all headers.
+   *
+   * @param parsedCSV a CSV that has already been parsed into an ArrayList<String>
+   */
   public Searcher(List<ArrayList<String>> parsedCSV) {
     this.csv = parsedCSV;
     this.csvHeaders = new ArrayList<>();
