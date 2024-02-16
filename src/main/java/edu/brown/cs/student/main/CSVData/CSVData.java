@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.State;
+package edu.brown.cs.student.main.CSVData;
 
 import java.util.ArrayList;
 import java.util.List;
