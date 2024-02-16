@@ -14,6 +14,7 @@ public class CSVData implements CSVDatasource {
 
   /**
    * A method that gets the current CSV
+   *
    * @return a defensive copy of the parsed CSV
    */
   @Override
@@ -23,6 +24,7 @@ public class CSVData implements CSVDatasource {
 
   /**
    * A method that sets the parsedCSV variable to the current CSV.
+   *
    * @param parsedCSV
    */
   @Override
@@ -32,6 +34,7 @@ public class CSVData implements CSVDatasource {
 
   /**
    * A method that gets the headers of the CSV.
+   *
    * @return a defensive copy of the CSV's headers
    */
   @Override
@@ -41,6 +44,7 @@ public class CSVData implements CSVDatasource {
 
   /**
    * A method that sets the csvHeaders variable to the current CSV's headers.
+   *
    * @param headers
    */
   @Override

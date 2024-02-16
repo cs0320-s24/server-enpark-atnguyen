@@ -18,7 +18,7 @@ public class CSVParser<T> {
 
   private final BufferedReader bReader;
   private final CreatorFromRow<T> creator;
-  private List<String> csvHeaders;
+
   private static final Pattern regexSplitCSVRow =
       Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
 

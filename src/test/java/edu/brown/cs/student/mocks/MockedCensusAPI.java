@@ -11,7 +11,7 @@ public class MockedCensusAPI implements BroadbandDatasource {
   }
 
   @Override
-  public BroadbandData getBroadband(String state, String county) {
+  public BroadbandData getBroadband(String state, String county, String time) {
     return this.data;
   }
 }

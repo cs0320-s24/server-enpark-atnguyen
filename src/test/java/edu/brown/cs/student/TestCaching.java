@@ -1,13 +1,13 @@
-package edu.brown.cs.student.mocks;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+package edu.brown.cs.student;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
+import edu.brown.cs.student.main.Caching.Caching;
 import edu.brown.cs.student.main.Datasource.BroadbandData;
 import edu.brown.cs.student.main.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.State.BroadbandDatasource;
+import edu.brown.cs.student.mocks.MockedCensusAPI;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -16,14 +16,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import okio.Buffer;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
-public class TestBroadbandHandlerMocked {
-
+public class TestCaching {
   @BeforeAll
   public static void setupOnce() {
     Spark.port(0);
@@ -34,11 +34,13 @@ public class TestBroadbandHandlerMocked {
       Types.newParameterizedType(Map.class, String.class, Object.class);
   private JsonAdapter<Map<String, Object>> adapter;
   private JsonAdapter<BroadbandData> broadbandDataAdapter;
+  private Caching cache;
 
   @BeforeEach
   public void setup() {
     BroadbandDatasource mockedSource =
         new MockedCensusAPI(new BroadbandData("Marin County, California", "94.0", "06", "041"));
+    this.cache = new Caching(mockedSource, 3,1);
     Spark.get("broadband", new BroadbandHandler(mockedSource));
     Spark.awaitInitialization();
     Moshi moshi = new Moshi.Builder().build();
@@ -62,28 +64,28 @@ public class TestBroadbandHandlerMocked {
   }
 
   @Test
-  public void testSimpleBroadbandResult() throws IOException {
-    HttpURLConnection connection = tryRequest("broadband?state=California&county=Marin");
-    assertEquals(200, connection.getResponseCode());
-    Map<String, Object> responseBody =
-        this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
-    assertEquals(
-        this.adapter.fromJson(
-            this.broadbandDataAdapter.toJson(
-                new BroadbandData("Marin County, California", "94.0", "06", "041"))),
-        responseBody.get("broadband"));
-    assertEquals("success",responseBody.get("result"));
-    connection.disconnect();
+  public void testIfCacheEliminates() throws IOException, InterruptedException {
+    String state = "California";
+    String county = "Marin";
+    tryRequest("broadband?state=" + state + "&county=" + county);
+    Thread.sleep(6000);
+    Assert.assertFalse(this.cache.isValueInCache(state,county));
   }
 
   @Test
-  public void testWithNoParameters() throws IOException {
-    HttpURLConnection connection = tryRequest("broadband?county=Marin");
-    assertEquals(200, connection.getResponseCode());
+  public void testCache() throws IOException {
+    String state = "California";
+    String county = "Marin";
+
+    HttpURLConnection connection = tryRequest("broadband?state=" + state + "&county=" + county);
     Map<String, Object> responseBody =
         this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
-    assertEquals("missing parameter",
-        responseBody.get("result"));
-    connection.disconnect();
+    HttpURLConnection connection2 = tryRequest("broadband?state=" + state + "&county=" + county);
+    Map<String, Object> responseBody2 =
+        this.adapter.fromJson(new Buffer().readFrom(connection2.getInputStream()));
+
+
+    Assert.assertEquals(responseBody.get("current time"), responseBody2.get("current time"));
   }
+
 }

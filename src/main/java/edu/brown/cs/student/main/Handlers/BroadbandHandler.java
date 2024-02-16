@@ -43,12 +43,16 @@ public class BroadbandHandler implements Route {
       String state_code = convertor.convertState(state.toLowerCase());
       BroadbandData data =
           this.state.getBroadband(
-              state_code, convertor.convertCounty(state_code, county.toLowerCase()));
+              state_code, convertor.convertCounty(state_code, county.toLowerCase()), this.getTime());
+      responseMap.put("result", "success");
       responseMap.put("state", state);
       responseMap.put("county", county);
       responseMap.put("broadband", data);
       responseMap.put("current time", this.getTime());
-    } catch (Exception e) {
+    } catch (NullPointerException e) {
+      responseMap.put("result", "missing parameter");
+    }
+    catch (Exception e) {
       e.printStackTrace();
       responseMap.put("result", "error");
     }
@@ -57,11 +61,18 @@ public class BroadbandHandler implements Route {
 
   /**
    * A helper method that gets the time of when the query was made
+   *
    * @return the time in a string
    */
   private String getTime() {
     LocalDateTime dateAndTime = LocalDateTime.now();
     DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     return dateAndTime.format(format);
+  }
+
+  private void putError(String state, Map<String, Object> map) {
+    if (state == null) {
+      map.put("result", "no state");
+    }
   }
 }

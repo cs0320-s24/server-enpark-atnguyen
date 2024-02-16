@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.Datasource;
 
 /**
  * A record that represents the ACS data returned by a broadband query.
+ *
  * @param name the name of the state and county
  * @param percentage the percentage of broadband in the area
  * @param state the state

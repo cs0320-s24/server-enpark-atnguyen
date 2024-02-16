@@ -23,6 +23,7 @@ public class DataConvertor {
 
   /**
    * The constructor of DataConvertor that defines the shared state.
+   *
    * @param state
    */
   public DataConvertor(BroadbandDatasource state) {
@@ -31,6 +32,7 @@ public class DataConvertor {
 
   /**
    * A method that converts a state to its code.
+   *
    * @param state the state to be converted
    * @return the code of that state
    */
@@ -41,6 +43,7 @@ public class DataConvertor {
 
   /**
    * A method that converts a county to its code.
+   *
    * @param state the state the county belongs in
    * @param county the county to be converted
    * @return the code of that county
@@ -51,8 +54,9 @@ public class DataConvertor {
   }
 
   /**
-   * Private helper method; throws IOException so different callers
-   * can handle differently if needed.
+   * Private helper method; throws IOException so different callers can handle differently if
+   * needed.
+   *
    * @param requestURL
    * @return
    * @throws IOException
@@ -69,7 +73,9 @@ public class DataConvertor {
   }
 
   /**
-   * A method that gets the list of state codes by ACS and deserializes it into a list that we can use.
+   * A method that gets the list of state codes by ACS and deserializes it into a list that we can
+   * use.
+   *
    * @return a list of a list of strings that contain the states and their codes
    * @throws IOException
    */
@@ -86,7 +92,9 @@ public class DataConvertor {
   }
 
   /**
-   * A method that gets the list of county codes in a state by ACS and deserializes it into a list that we can use.
+   * A method that gets the list of county codes in a state by ACS and deserializes it into a list
+   * that we can use.
+   *
    * @param state the state where the county exists
    * @return a list of a list of strings that contain the states and their codes
    * @throws IOException
@@ -109,6 +117,7 @@ public class DataConvertor {
 
   /**
    * A method that creates a hashmap from the list of states and their codes
+   *
    * @return a hashmap that maps each state to their code
    */
   private HashMap<String, String> createStateMap() {
@@ -129,6 +138,7 @@ public class DataConvertor {
 
   /**
    * A method that creates a hashmap from the list of counties in a state and their codes
+   *
    * @param state the state where the county exists in
    * @return a hashmap that maps each county to their code
    */
