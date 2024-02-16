@@ -59,7 +59,7 @@ public class LoadHandler implements Route {
         this.state.setCSVHeaders(new ArrayList<>());
       }
       responseMap.put("result", "success");
-      responseMap.put("file", this.file);
+      responseMap.put("filepath", this.file);
 
     } catch (FactoryFailureException e) {
       responseMap.put("result", "error_parse");
@@ -78,7 +78,7 @@ public class LoadHandler implements Route {
     } else if (hasHeaders.toLowerCase().equals("no")) {
       return false;
     } else {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("invalid header parameter");
     }
   }
 
