@@ -31,6 +31,7 @@ public final class Server {
 
   /**
    * Constructor of Server that defines the shared state and calls on our port to start.
+   *
    * @param CSVstate
    * @param broadbandState
    */
@@ -40,9 +41,7 @@ public final class Server {
     this.run();
   }
 
-  /**
-   * A method that is called at executions and starts the port 3232.
-   */
+  /** A method that is called at executions and starts the port 3232. */
   private void run() {
     Spark.port(this.port);
 

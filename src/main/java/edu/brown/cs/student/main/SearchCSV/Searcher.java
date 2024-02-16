@@ -13,6 +13,7 @@ public class Searcher {
 
   /**
    * Constructor that is used when searching through a specific header.
+   *
    * @param parsedCSV a CSV that has already been parsed into an ArrayList<String>
    * @param csvHeaders a list containing the headers
    */
@@ -23,6 +24,7 @@ public class Searcher {
 
   /**
    * Constructor that is used when searching all headers.
+   *
    * @param parsedCSV a CSV that has already been parsed into an ArrayList<String>
    */
   public Searcher(List<ArrayList<String>> parsedCSV) {

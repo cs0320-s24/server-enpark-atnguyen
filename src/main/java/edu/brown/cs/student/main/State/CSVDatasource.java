@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An interface that declares the methods needed to share the CSV file's data between the load, search,
- * and view handlers.
+ * An interface that declares the methods needed to share the CSV file's data between the load,
+ * search, and view handlers.
  */
 public interface CSVDatasource {
 
