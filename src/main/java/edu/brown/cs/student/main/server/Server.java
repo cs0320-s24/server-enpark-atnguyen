@@ -2,15 +2,15 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import edu.brown.cs.student.main.Caching.Caching;
-import edu.brown.cs.student.main.Datasource.CensusAPI;
+import edu.brown.cs.student.main.ACSData.Caching.Caching;
+import edu.brown.cs.student.main.ACSData.CensusAPI;
 import edu.brown.cs.student.main.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Handlers.ViewHandler;
-import edu.brown.cs.student.main.State.BroadbandDatasource;
-import edu.brown.cs.student.main.State.CSVData;
-import edu.brown.cs.student.main.State.CSVDatasource;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
+import edu.brown.cs.student.main.CSVData.CSVData;
+import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import spark.Spark;
 
 /** The Main class of our project. This is where execution begins. */
@@ -27,7 +27,6 @@ public final class Server {
    */
   public static void main(String[] args) {
     new Server(new CSVData(), new Caching(new CensusAPI(), 50, 5));
-    System.out.println("Server started; exiting main...");
   }
 
   /**

@@ -1,9 +1,10 @@
 package edu.brown.cs.student.main.Handlers;
 
-import edu.brown.cs.student.main.Datasource.BroadbandData;
-import edu.brown.cs.student.main.Datasource.DataConvertor;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
+import edu.brown.cs.student.main.ACSData.CodeConverter;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.State.BroadbandDatasource;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import spark.Route;
 
 /** A class that handles queries related to broadband. */
 public class BroadbandHandler implements Route {
-  private BroadbandDatasource state;
+  private BroadbandDatasource sharedState;
 
   /**
    * The constructor of the BroadbandHandler class that initializes the state.
@@ -22,14 +23,14 @@ public class BroadbandHandler implements Route {
    * @param state
    */
   public BroadbandHandler(BroadbandDatasource state) {
-    this.state = state;
+    this.sharedState = state;
   }
 
   /**
    * A method that handles broadband queries and puts the API response into a JSON to be returned to
    * the user.
    *
-   * @param request: the request made by the user
+   * @param request The request made by the user
    * @param response
    * @return: a JSON that holds the data to be shown to the user
    */
@@ -38,25 +39,29 @@ public class BroadbandHandler implements Route {
     Map<String, Object> responseMap = new HashMap<>();
     String state = request.queryParams("state");
     String county = request.queryParams("county");
-    DataConvertor convertor = new DataConvertor(this.state);
+    // return with error if state or county isn't entered
+    if (state == null || county == null) {
+      responseMap.put("result", "error_bad_request");
+      return new Serializer().serialize(responseMap);
+    }
+
+    CodeConverter convertor = new CodeConverter(this.sharedState);
     try {
-      String state_code = convertor.convertState(state.toLowerCase());
+      String stateCode = convertor.convertState(state.toLowerCase());
       BroadbandData data =
-          this.state.getBroadband(
-              state_code, convertor.convertCounty(state_code, county.toLowerCase()), this.getTime());
-      responseMap.put("result", "success");
+          this.sharedState.getBroadband(
+              stateCode, convertor.convertCounty(stateCode, county.toLowerCase()));
       responseMap.put("state", state);
       responseMap.put("county", county);
       responseMap.put("broadband", data);
       responseMap.put("current time", this.getTime());
-    } catch (NullPointerException e) {
-      responseMap.put("result", "missing parameter");
+    } catch (IllegalArgumentException e) {
+      responseMap.put("result", "error_bad_request");
     }
-    catch (Exception e) {
-      e.printStackTrace();
-      responseMap.put("result", "error");
+    catch (IOException e) {
+      responseMap.put("result", "error_datasource");
     }
-    return new Serializer().createJSON(responseMap);
+    return new Serializer().serialize(responseMap);
   }
 
   /**

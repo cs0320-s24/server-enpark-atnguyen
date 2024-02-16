@@ -1,9 +1,10 @@
-package edu.brown.cs.student.main.Datasource;
+package edu.brown.cs.student.main.ACSData;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.State.BroadbandDatasource;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -18,6 +19,8 @@ import okio.Buffer;
  */
 public class CensusAPI implements BroadbandDatasource {
 
+
+
   /**
    * A method that returns the response given by ACS and properly uses the data in the cache or
    * loads it into the cache if it isn't there.
@@ -27,8 +30,9 @@ public class CensusAPI implements BroadbandDatasource {
    * @return the broadband data of the state and county
    * @throws IOException
    */
+
   @Override
-  public BroadbandData getBroadband(String state, String county, String time) throws IOException {
+  public BroadbandData getBroadband(String state, String county) throws IOException {
     return getBroadBandPercentage(state, county);
   }
 
@@ -62,6 +66,7 @@ public class CensusAPI implements BroadbandDatasource {
    * @return the data converted into a BroadbandData record
    * @throws IOException
    */
+
   private static BroadbandData getBroadBandPercentage(String state, String county)
       throws IOException {
     URL requestURL =

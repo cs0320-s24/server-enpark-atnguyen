@@ -1,12 +1,9 @@
-package edu.brown.cs.student.main.Caching;
+package edu.brown.cs.student.main.ACSData.Caching;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import edu.brown.cs.student.main.Datasource.BroadbandData;
-import edu.brown.cs.student.main.State.BroadbandDatasource;
+import com.google.common.cache.Cache;
+
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,7 +22,8 @@ public class Caching implements BroadbandDatasource {
    * @param size size of the cache
    * @param durationInMinutes amount of time before cache expires
    */
-  public Caching(BroadbandDatasource toWrap, int size, long durationInMinutes) {
+
+  public Caching(BroadbandDatasource toWrap, int size, int durationInMinutes) {
     this.toWrap = toWrap;
     this.cache =
         CacheBuilder.newBuilder()
@@ -45,14 +43,17 @@ public class Caching implements BroadbandDatasource {
    * @throws IOException
    */
   @Override
-  public BroadbandData getBroadband(String state, String county, String time) throws IOException {
+  public BroadbandData getBroadband(String state, String county) throws IOException {
     BroadbandData data = this.cache.getIfPresent(state + county);
     if (data == null) {
-      data = toWrap.getBroadband(state, county, time);
+      data = toWrap.getBroadband(state, county);
+      data = this.toWrap.getBroadband(state,county);
       this.cache.put(state + county, data);
     }
     return data;
   }
+
+
   public boolean isValueInCache(String state, String county) {
     BroadbandData data = this.cache.getIfPresent(state + county);
     if (data == null) {

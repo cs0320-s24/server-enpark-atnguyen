@@ -1,10 +1,10 @@
 package edu.brown.cs.student.main.Handlers;
 
-import edu.brown.cs.student.main.CreatorFromRowClasses.ArrayListCreator;
-import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
+import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.ArrayListCreator;
+import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.FactoryFailureException;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.SearchCSV.CSVParser;
-import edu.brown.cs.student.main.State.CSVDatasource;
+import edu.brown.cs.student.main.CSVFunctions.CSVParser;
+import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,18 +42,30 @@ public class LoadHandler implements Route {
     this.file = request.queryParams("file");
     String hasHeaders = request.queryParams("headers");
 
-    // object will be class that represents JSON
     Map<String, Object> responseMap = new HashMap<>();
-    responseMap.put("header", hasHeaders);
+    responseMap.put("headers", hasHeaders);
+
+    // if file isn't entered, return with an error
+    if (this.file == null) {
+      responseMap.put("result", "error_bad_request");
+      return new Serializer().serialize(responseMap);
+    }
+    // if headers isn't specified, default to no headers
+    if (hasHeaders == null) {
+      hasHeaders = "no";
+    }
 
     try {
       // directly return the error message if the file is invalid
       if (!this.checkValidFile(responseMap)) {
-        return new Serializer().createJSON(responseMap);
+        return new Serializer().serialize(responseMap);
       }
+
+      // parse loaded csv so search and view don't have to parse again
       CSVParser parser = new CSVParser<>(new FileReader(this.file), new ArrayListCreator());
       List<ArrayList<String>> parsedCSV = parser.parse();
       boolean headers = this.convertHeaderResponse(hasHeaders);
+      // set the shared state's csv and header variables
       if (headers) {
         this.state.setCurrentCSV(parsedCSV.subList(1, parsedCSV.size() - 1));
         this.state.setCSVHeaders(parsedCSV.get(0));
@@ -62,14 +74,17 @@ public class LoadHandler implements Route {
         this.state.setCSVHeaders(new ArrayList<>());
       }
       responseMap.put("result", "success");
-      responseMap.put("file", this.file);
+      responseMap.put("filepath", this.file);
+
     } catch (FactoryFailureException e) {
       responseMap.put("result", "error_parse");
     } catch (IOException e) {
       responseMap.put("result", "error_datasource");
+    } catch (IllegalArgumentException e) {
+      responseMap.put("result", "error_bad_request");
     }
 
-    return new Serializer().createJSON(responseMap);
+    return new Serializer().serialize(responseMap);
   }
 
   /**
@@ -87,8 +102,7 @@ public class LoadHandler implements Route {
     } else if (hasHeaders.toLowerCase().equals("no")) {
       return false;
     } else {
-      return false;
-      //   TODO: figure out error handling
+      throw new IllegalArgumentException("invalid header parameter");
     }
   }
 

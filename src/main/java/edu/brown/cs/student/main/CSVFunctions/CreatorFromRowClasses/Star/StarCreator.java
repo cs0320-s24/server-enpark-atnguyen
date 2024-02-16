@@ -1,6 +1,6 @@
-package edu.brown.cs.student.main.CreatorFromRowClasses.Star;
+package edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.Star;
 
-import edu.brown.cs.student.main.CreatorFromRowClasses.CreatorFromRow;
+import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.CreatorFromRow;
 import java.util.List;
 
 /** A StarCreator class that implements CreatorFromRow. It creates a Star object. */

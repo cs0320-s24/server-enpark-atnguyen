@@ -1,6 +1,5 @@
-package edu.brown.cs.student.main.State;
+package edu.brown.cs.student.main.ACSData.Caching;
 
-import edu.brown.cs.student.main.Datasource.BroadbandData;
 import java.io.IOException;
 
 /** An interface that can get the broadband of a certain state and county. */
@@ -15,5 +14,9 @@ public interface BroadbandDatasource {
    * @return the data in the form of the BroadbandData record
    * @throws IOException
    */
-  BroadbandData getBroadband(String state, String county, String time) throws IOException;
+ // BroadbandData getBroadband(String state, String county, String time) throws IOException;
+
+  BroadbandData getBroadband(String state, String county) throws IOException;
+
+
 }

@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.CreatorFromRowClasses;
+package edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses;
 
 import java.util.ArrayList;
 import java.util.List;
