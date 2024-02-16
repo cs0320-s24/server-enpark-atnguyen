@@ -1,7 +1,7 @@
 package edu.brown.cs.student.mocks;
 
-import edu.brown.cs.student.main.Datasource.BroadbandData;
-import edu.brown.cs.student.main.State.BroadbandDatasource;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
 
 public class MockedCensusAPI implements BroadbandDatasource {
   private final BroadbandData data;

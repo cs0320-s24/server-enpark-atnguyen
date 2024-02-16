@@ -1,8 +1,8 @@
 package edu.brown.cs.student.main.Handlers;
 
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.SearchCSV.Searcher;
-import edu.brown.cs.student.main.State.CSVDatasource;
+import edu.brown.cs.student.main.CSVFunctions.Searcher;
+import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +36,13 @@ public class SearchHandler implements Route {
   public Object handle(Request request, Response response) {
     Map<String, Object> responseMap = new HashMap<>();
     String value = request.queryParams("value");
+
+    // return with error if no value parameter is entered
+    if (value == null) {
+      responseMap.put("result", "error_bad_request");
+      return new Serializer().serialize(responseMap);
+    }
+
     String column = request.queryParams("column");
     // put requested parameters into the response map
     responseMap.put("requested_value", value);
@@ -45,7 +52,8 @@ public class SearchHandler implements Route {
       responseMap.put("requested_column", "none_specified");
     }
 
-    if (this.state.getCurrentCSV().isEmpty()) { // verifies that the user loaded a CSV
+    List<ArrayList<String>> csv = this.state.getCurrentCSV();
+    if (csv.isEmpty()) { // verifies that the user loaded a CSV
       responseMap.put("result", "error_no_csv_loaded");
     } else {
       boolean hasHeaders = true;
@@ -56,15 +64,15 @@ public class SearchHandler implements Route {
       }
       Searcher searcher;
       if (hasHeaders) {
-        searcher = new Searcher(this.state.getCurrentCSV(), headers);
+        searcher = new Searcher(csv, headers);
       } else {
-        searcher = new Searcher(this.state.getCurrentCSV());
+        searcher = new Searcher(csv);
       }
 
       if (column == null) { // if the user did not specify a column to search by
         List<ArrayList<String>> foundRows = searcher.search(value, hasHeaders);
         if (foundRows.isEmpty()) {
-          responseMap.put("data", "value not found");
+          responseMap.put("data", "value_not_found");
         } else {
           responseMap.put("data", searcher.search(value, hasHeaders));
         }
@@ -72,7 +80,7 @@ public class SearchHandler implements Route {
         try {
           List<ArrayList<String>> foundRows = searcher.search(value, column, hasHeaders);
           if (foundRows.isEmpty()) {
-            responseMap.put("data", "value not found");
+            responseMap.put("data", "value_not_found");
           } else {
             responseMap.put("data", foundRows);
           }
@@ -82,6 +90,6 @@ public class SearchHandler implements Route {
         }
       }
     }
-    return new Serializer().createJSON(responseMap);
+    return new Serializer().serialize(responseMap);
   }
 }

@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.CreatorFromRowClasses.Star;
+package edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.Star;
 
 /** A class that goes with StarCreator to make a Star object. */
 public class Star {

@@ -1,10 +1,10 @@
 package edu.brown.cs.student.main.Handlers;
 
-import edu.brown.cs.student.main.CreatorFromRowClasses.ArrayListCreator;
-import edu.brown.cs.student.main.CreatorFromRowClasses.FactoryFailureException;
+import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.ArrayListCreator;
+import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.FactoryFailureException;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.SearchCSV.CSVParser;
-import edu.brown.cs.student.main.State.CSVDatasource;
+import edu.brown.cs.student.main.CSVFunctions.CSVParser;
+import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,12 +43,12 @@ public class LoadHandler implements Route {
     String hasHeaders = request.queryParams("headers");
 
     Map<String, Object> responseMap = new HashMap<>();
-    responseMap.put("header", hasHeaders);
+    responseMap.put("headers", hasHeaders);
 
     // if file isn't entered, return with an error
     if (this.file == null) {
       responseMap.put("result", "error_bad_request");
-      return new Serializer().createJSON(responseMap);
+      return new Serializer().serialize(responseMap);
     }
     // if headers isn't specified, default to no headers
     if (hasHeaders == null) {
@@ -58,7 +58,7 @@ public class LoadHandler implements Route {
     try {
       // directly return the error message if the file is invalid
       if (!this.checkValidFile(responseMap)) {
-        return new Serializer().createJSON(responseMap);
+        return new Serializer().serialize(responseMap);
       }
 
       // parse loaded csv so search and view don't have to parse again
@@ -84,7 +84,7 @@ public class LoadHandler implements Route {
       responseMap.put("result", "error_bad_request");
     }
 
-    return new Serializer().createJSON(responseMap);
+    return new Serializer().serialize(responseMap);
   }
 
   /**
