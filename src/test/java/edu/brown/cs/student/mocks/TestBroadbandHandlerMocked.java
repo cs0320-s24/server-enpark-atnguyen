@@ -1,4 +1,4 @@
-package edu.brown.cs.student;
+package edu.brown.cs.student.mocks;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
-public class TestBroadbandHandler {
+public class TestBroadbandHandlerMocked {
 
   @BeforeAll
   public static void setupOnce() {

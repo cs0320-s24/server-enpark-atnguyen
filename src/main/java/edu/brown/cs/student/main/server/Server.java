@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.Caching.Caching;
 import edu.brown.cs.student.main.Datasource.CensusAPI;
 import edu.brown.cs.student.main.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Handlers.LoadHandler;
@@ -25,7 +26,7 @@ public final class Server {
    * @param args An array of command line arguments
    */
   public static void main(String[] args) {
-    new Server(new CSVData(), new CensusAPI());
+    new Server(new CSVData(), new Caching(new CensusAPI(), 50, 5));
     System.out.println("Server started; exiting main...");
   }
 
