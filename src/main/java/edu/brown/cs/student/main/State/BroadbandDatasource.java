@@ -16,4 +16,5 @@ public interface BroadbandDatasource {
    * @throws IOException
    */
   BroadbandData getBroadband(String state, String county) throws IOException;
+
 }
