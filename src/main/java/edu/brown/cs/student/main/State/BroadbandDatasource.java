@@ -6,4 +6,5 @@ import java.io.IOException;
 public interface BroadbandDatasource {
 
   BroadbandData getBroadband(String state, String county) throws IOException;
+
 }
