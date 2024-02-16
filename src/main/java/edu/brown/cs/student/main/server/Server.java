@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.Caching.Caching;
 import edu.brown.cs.student.main.Datasource.CensusAPI;
 import edu.brown.cs.student.main.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Handlers.LoadHandler;
@@ -25,12 +26,13 @@ public final class Server {
    * @param args An array of command line arguments
    */
   public static void main(String[] args) {
-    new Server(new CSVData(), new CensusAPI());
+    new Server(new CSVData(), new Caching(new CensusAPI(), 50, 5));
     System.out.println("Server started; exiting main...");
   }
 
   /**
    * Constructor of Server that defines the shared state and calls on our port to start.
+   *
    * @param CSVstate
    * @param broadbandState
    */
@@ -40,9 +42,7 @@ public final class Server {
     this.run();
   }
 
-  /**
-   * A method that is called at executions and starts the port 3232.
-   */
+  /** A method that is called at executions and starts the port 3232. */
   private void run() {
     Spark.port(this.port);
 

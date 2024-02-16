@@ -11,14 +11,13 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/**
- * A class that handles queries related to searching a CSV file.
- */
+/** A class that handles queries related to searching a CSV file. */
 public class SearchHandler implements Route {
   private CSVDatasource state;
 
   /**
    * The constructor of the SearchHandler class that initializes the shared state.
+   *
    * @param state the shared state between load, search, and view
    */
   public SearchHandler(CSVDatasource state) {
@@ -26,8 +25,9 @@ public class SearchHandler implements Route {
   }
 
   /**
-   * A method that handles search queries and puts the rows that include the value being searched for into a JSON
-   * to be returned to the user.
+   * A method that handles search queries and puts the rows that include the value being searched
+   * for into a JSON to be returned to the user.
+   *
    * @param request the request made by the user
    * @param response
    * @return a JSON that holds the data to be shown to the user
@@ -41,16 +41,16 @@ public class SearchHandler implements Route {
     responseMap.put("requested_value", value);
     if (column != null) {
       responseMap.put("requested_column", column);
-    }
-    else {
+    } else {
       responseMap.put("requested_column", "none_specified");
     }
 
-    if (this.state.getCurrentCSV().isEmpty()) { //verifies that the user loaded a CSV
+    if (this.state.getCurrentCSV().isEmpty()) { // verifies that the user loaded a CSV
       responseMap.put("result", "error_no_csv_loaded");
     } else {
       boolean hasHeaders = true;
-      ArrayList<String> headers = this.state.getCSVHeaders(); //if there are headers set the boolean accordingly
+      ArrayList<String> headers =
+          this.state.getCSVHeaders(); // if there are headers set the boolean accordingly
       if (headers.isEmpty()) {
         hasHeaders = false;
       }
@@ -61,20 +61,20 @@ public class SearchHandler implements Route {
         searcher = new Searcher(this.state.getCurrentCSV());
       }
 
-      if (column == null) { //if the user did not specify a column to search by
+      if (column == null) { // if the user did not specify a column to search by
         List<ArrayList<String>> foundRows = searcher.search(value, hasHeaders);
         if (foundRows.isEmpty()) {
-          responseMap.put("found", "value not found");
+          responseMap.put("data", "value not found");
         } else {
-          responseMap.put("found", searcher.search(value, hasHeaders));
+          responseMap.put("data", searcher.search(value, hasHeaders));
         }
-      } else { //search by a specific column
+      } else { // search by a specific column
         try {
           List<ArrayList<String>> foundRows = searcher.search(value, column, hasHeaders);
           if (foundRows.isEmpty()) {
-            responseMap.put("found", "value not found");
+            responseMap.put("data", "value not found");
           } else {
-            responseMap.put("found", foundRows);
+            responseMap.put("data", foundRows);
           }
           // thrown when an invalid column is entered
         } catch (IllegalArgumentException e) {
@@ -85,4 +85,3 @@ public class SearchHandler implements Route {
     return new Serializer().createJSON(responseMap);
   }
 }
-
