@@ -22,9 +22,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
+/**
+ * Testing suite for Load
+ */
 public class TestLoadCSV {
 
-
+  /**
+   * Setup method to start port
+   */
     @BeforeAll
     public static void setupOnce() {
       Spark.port(0);
@@ -36,8 +41,12 @@ public class TestLoadCSV {
     private JsonAdapter<Map<String, Object>> adapter;
     private JsonAdapter<BroadbandData> broadbandDataAdapter;
 
-    @BeforeEach
-    public void setup() throws IOException {
+  /**
+   * Setup method before each test
+   * @throws IOException
+   */
+  @BeforeEach
+    public void setup() {
       Spark.get("load", new LoadHandler(new CSVData()));
       Spark.awaitInitialization();
       Moshi moshi = new Moshi.Builder().build();
@@ -45,12 +54,21 @@ public class TestLoadCSV {
       this.broadbandDataAdapter = moshi.adapter(BroadbandData.class);
     }
 
-    @AfterEach
+  /**
+   * Method called after each test
+   */
+  @AfterEach
     public void teardown() {
       Spark.unmap("load");
       Spark.awaitStop();
     }
 
+  /**
+   * Sets up request
+   * @param apiCall the request to be made
+   * @return the client connection
+   * @throws IOException invalid input/output
+   */
     private HttpURLConnection tryRequest(String apiCall) throws IOException {
       URL requestURL = new URL("http://localhost:" + Spark.port() + "/" + apiCall);
       HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
@@ -60,6 +78,10 @@ public class TestLoadCSV {
       return clientConnection;
     }
 
+  /**
+   * Tests simple load request
+   * @throws IOException invalid input/output
+   */
     @Test
     public void testSimpleLoad() throws IOException {
       HttpURLConnection connection =
@@ -71,6 +93,10 @@ public class TestLoadCSV {
       connection.disconnect();
     }
 
+  /**
+   * Tests when the file is wrong
+   * @throws IOException invalid input/output
+   */
     @Test
     public void testLoadDataSourceError() throws IOException {
       HttpURLConnection connection =
@@ -84,6 +110,10 @@ public class TestLoadCSV {
       connection.disconnect();
     }
 
+  /**
+   * Tests when the file is outside the directory
+   * @throws IOException invalid input/output
+   */
     @Test
     public void testLoadDataFile() throws IOException {
       HttpURLConnection connection =
@@ -95,6 +125,10 @@ public class TestLoadCSV {
       connection.disconnect();
     }
 
+  /**
+   * Tests loading nothing
+   * @throws IOException invalid input/output
+   */
     @Test
     public void testLoadNothing() throws IOException {
       HttpURLConnection connection =
@@ -106,7 +140,10 @@ public class TestLoadCSV {
       connection.disconnect();
     }
 
-
+  /**
+   * Tests that you can load a new file
+   * @throws IOException invalid input/output
+   */
     @Test
   public void testLoadDataFileTwice() throws IOException {
     HttpURLConnection connection =

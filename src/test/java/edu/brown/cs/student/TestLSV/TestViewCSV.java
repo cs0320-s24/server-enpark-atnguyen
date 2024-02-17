@@ -23,8 +23,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
+/**
+ * Testing suite for view
+ */
 public class TestViewCSV {
 
+  /**
+   * Starts the port
+   */
   @BeforeAll
   public static void setupOnce() {
     Spark.port(0);
@@ -37,6 +43,9 @@ public class TestViewCSV {
   private JsonAdapter<BroadbandData> broadbandDataAdapter;
   private CSVData data;
 
+  /**
+   * Called before each test
+   */
   @BeforeEach
   public void setup() {
     this.data = new CSVData();
@@ -48,6 +57,9 @@ public class TestViewCSV {
     this.broadbandDataAdapter = moshi.adapter(BroadbandData.class);
   }
 
+  /**
+   * Called after each test
+   */
   @AfterEach
   public void teardown() {
     Spark.unmap("load");
@@ -55,6 +67,12 @@ public class TestViewCSV {
     Spark.awaitStop();
   }
 
+  /**
+   * Makes request
+   * @param apiCall request to be made
+   * @return client connection
+   * @throws IOException invalid input/output
+   */
   private HttpURLConnection tryRequest(String apiCall) throws IOException {
     URL requestURL = new URL("http://localhost:" + Spark.port() + "/" + apiCall);
     HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
@@ -64,6 +82,10 @@ public class TestViewCSV {
     return clientConnection;
   }
 
+  /**
+   * Tests simple view request
+   * @throws IOException invalid input/output
+   */
   @Test
   public void testSimpleView() throws IOException {
     HttpURLConnection connection =
@@ -82,6 +104,10 @@ public class TestViewCSV {
     connection.disconnect();
   }
 
+  /**
+   * Test view no file
+   * @throws IOException invalid input/output
+   */
   @Test
   public void testViewNoFile() throws IOException {
     HttpURLConnection connection =

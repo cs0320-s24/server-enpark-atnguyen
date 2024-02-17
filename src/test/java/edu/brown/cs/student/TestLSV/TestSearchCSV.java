@@ -24,8 +24,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
+
+/**
+ * Test suit for search
+ */
 public class TestSearchCSV {
 
+  /**
+   * Start the port
+   */
   @BeforeAll
   public static void setupOnce() {
     Spark.port(0);
@@ -38,6 +45,9 @@ public class TestSearchCSV {
   private JsonAdapter<BroadbandData> broadbandDataAdapter;
   private CSVData data;
 
+  /**
+   * Called before each test
+   */
   @BeforeEach
   public void setup() {
     this.data = new CSVData();
@@ -49,6 +59,9 @@ public class TestSearchCSV {
     this.broadbandDataAdapter = moshi.adapter(BroadbandData.class);
   }
 
+  /**
+   * Called after each test
+   */
   @AfterEach
   public void teardown() {
     Spark.unmap("load");
@@ -56,6 +69,12 @@ public class TestSearchCSV {
     Spark.awaitStop();
   }
 
+  /**
+   * Creates a request
+   * @param apiCall request to be made
+   * @return client connection
+   * @throws IOException invalid input/output
+   */
   private HttpURLConnection tryRequest(String apiCall) throws IOException {
     URL requestURL = new URL("http://localhost:" + Spark.port() + "/" + apiCall);
     HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
@@ -65,7 +84,10 @@ public class TestSearchCSV {
     return clientConnection;
   }
 
-
+  /**
+   * Tests a simple search request
+   * @throws IOException invalid input/output
+   */
   @Test
   public void testSimpleSearch() throws IOException {
     HttpURLConnection connection =
@@ -85,6 +107,10 @@ public class TestSearchCSV {
     connection.disconnect();
   }
 
+  /**
+   * Tests for no search parameters
+   * @throws IOException invalid input/output
+   */
   @Test
   public void testSearchNoParams() throws IOException {
     HttpURLConnection connection =
@@ -96,6 +122,10 @@ public class TestSearchCSV {
     connection.disconnect();
   }
 
+  /**
+   * Tests by index search
+   * @throws IOException invalid input/output
+   */
   @Test
   public void testSearchIndex() throws IOException {
     HttpURLConnection connection =
