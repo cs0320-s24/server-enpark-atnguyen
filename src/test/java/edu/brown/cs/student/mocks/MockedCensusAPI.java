@@ -13,6 +13,6 @@ public class MockedCensusAPI implements BroadbandDatasource {
 
   @Override
   public BroadbandData getBroadband(String state, String county) throws IOException {
-    return null;
+    return this.data;
   }
 }

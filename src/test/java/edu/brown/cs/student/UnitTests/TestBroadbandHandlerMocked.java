@@ -1,4 +1,4 @@
-package edu.brown.cs.student.mocks;
+package edu.brown.cs.student.UnitTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,6 +8,7 @@ import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
 import edu.brown.cs.student.main.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
+import edu.brown.cs.student.mocks.MockedCensusAPI;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -82,7 +83,7 @@ public class TestBroadbandHandlerMocked {
     assertEquals(200, connection.getResponseCode());
     Map<String, Object> responseBody =
         this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
-    assertEquals("missing parameter",
+    assertEquals("error_bad_request",
         responseBody.get("result"));
     connection.disconnect();
   }
