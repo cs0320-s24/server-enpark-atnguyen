@@ -75,7 +75,7 @@ public class SearchHandler implements Route {
         if (foundRows.isEmpty()) {
           responseMap.put("data", "value_not_found");
         } else {
-          responseMap.put("data", searcher.search(value, hasHeaders));
+          responseMap.put("data", foundRows);
         }
       } else { // search by a specific column
         try {
@@ -89,6 +89,11 @@ public class SearchHandler implements Route {
         } catch (IllegalArgumentException e) {
           responseMap.put("result", "error_bad_request");
         }
+      }
+      // add malformed row warnings to the responseMap
+      ArrayList<Integer> malformedRows = searcher.getMalformedRows();
+      if (!malformedRows.isEmpty()) {
+        responseMap.put("malformed_rows", malformedRows);
       }
     }
     return new Serializer().serialize(responseMap);
