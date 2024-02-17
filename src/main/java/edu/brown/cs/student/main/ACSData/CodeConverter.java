@@ -78,12 +78,12 @@ public class CodeConverter {
   private static HttpURLConnection connect(URL requestURL) throws IOException {
     URLConnection urlConnection = requestURL.openConnection();
     if (!(urlConnection instanceof HttpURLConnection)) {
-      System.out.println("error");
+      throw new IOException();
     }
     HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
     clientConnection.connect(); // GET
     if (clientConnection.getResponseCode() != 200) {
-      System.out.println("error");
+      throw new IOException();
     }
     return clientConnection;
   }

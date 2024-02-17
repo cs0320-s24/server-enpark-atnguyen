@@ -22,6 +22,13 @@ public class Caching implements BroadbandDatasource {
    * @param durationInMinutes amount of time before cache expires
    */
   public Caching(BroadbandDatasource toWrap, int size, int durationInMinutes) {
+    // set default size and duration if invalid
+    if (size < 1) {
+      size = 10;
+    }
+    if (size < durationInMinutes) {
+      durationInMinutes = 1;
+    }
     this.toWrap = toWrap;
     this.cache =
         CacheBuilder.newBuilder()

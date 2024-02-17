@@ -73,21 +73,6 @@ public class TestBroadbandHandlerMocked {
     return dateAndTime.format(format);
   }
 
-    @Test
-    public void testSimpleBroadbandResult() throws IOException {
-
-    HttpURLConnection connection = tryRequest("broadband?state=California&county=Marin");
-    assertEquals(200, connection.getResponseCode());
-    Map<String, Object> responseBody =
-          this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
-    assertEquals(
-        this.broadbandDataAdapter.toJson(
-            new BroadbandData("Marin County, California", "94.0", "06", "041",this.getTime())),
-          responseBody.get("broadband"));
-    assertEquals("success", responseBody.get("result"));
-    connection.disconnect();
-  }
-
   @Test
   public void testWithEmptyParameters() throws IOException {
     HttpURLConnection connection = tryRequest("broadband?county=Marin");

@@ -1,4 +1,4 @@
-package edu.brown.cs.student.TestLSV;
+package edu.brown.cs.student.TestCSV;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

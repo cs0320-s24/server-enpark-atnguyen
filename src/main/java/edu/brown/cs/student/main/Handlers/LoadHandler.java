@@ -77,9 +77,7 @@ public class LoadHandler implements Route {
       responseMap.put("result", "success");
       responseMap.put("filepath", this.file);
 
-    } catch (FactoryFailureException e) {
-      responseMap.put("result", "error_parse");
-    } catch (IOException e) {
+    } catch (IOException | FactoryFailureException e) {
       responseMap.put("result", "error_datasource");
     } catch (IllegalArgumentException e) {
       responseMap.put("result", "error_bad_request");

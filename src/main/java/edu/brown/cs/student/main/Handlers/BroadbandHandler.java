@@ -20,7 +20,7 @@ public class BroadbandHandler implements Route {
   /**
    * The constructor of the BroadbandHandler class that initializes the state.
    *
-   * @param state broadband shared state
+   * @param state Shared state that holds the broadband data that is needed for caching.
    */
   public BroadbandHandler(BroadbandDatasource state) {
     this.sharedState = state;
@@ -30,9 +30,9 @@ public class BroadbandHandler implements Route {
    * A method that handles broadband queries and puts the API response into a JSON to be returned to
    * the user.
    *
-   * @param request The request made by the user
-   * @param response response to be made
-   * @return: a JSON that holds the data to be shown to the user
+   * @param request The request made by the user.
+   * @param response
+   * @return: a JSON that holds the data to be shown to the user.
    */
   @Override
   public Object handle(Request request, Response response) {
@@ -65,7 +65,7 @@ public class BroadbandHandler implements Route {
   /**
    * A helper method that gets the time of when the query was made.
    *
-   * @return the time in a string
+   * @return the time in a string.
    */
   private String getTime() {
     LocalDateTime dateAndTime = LocalDateTime.now();

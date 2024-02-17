@@ -1,5 +1,6 @@
 package edu.brown.cs.student.main.CSVFunctions;
 
+import com.beust.ah.A;
 import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.FactoryFailureException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,12 +11,13 @@ public class Searcher {
 
   private final List<ArrayList<String>> csv;
   private final ArrayList<String> csvHeaders;
+  private final ArrayList<Integer> malformedRows = new ArrayList<>();
 
   /**
    * Constructor that is used when searching through a specific header.
    *
-   * @param parsedCSV a CSV that has already been parsed into an ArrayList<String>
-   * @param csvHeaders a list containing the headers
+   * @param parsedCSV a CSV that has already been parsed into an ArrayList<String>.
+   * @param csvHeaders a list containing the headers.
    */
   public Searcher(List<ArrayList<String>> parsedCSV, ArrayList<String> csvHeaders) {
     this.csv = parsedCSV;
@@ -54,9 +56,9 @@ public class Searcher {
     }
 
     for (ArrayList<String> row : this.csv) {
-      // statement to warn users that their CSV may be malformed, but it is still searchable
+      // adds to malformedRows to warn users that their CSV may be malformed, but it is still searchable
       if (numCols != this.findNumCols(row)) {
-        // TODO: add error/warning handling here for a malformed row
+        this.malformedRows.add(this.csv.indexOf(row));
       }
       for (String word : row) { // check each column
         if (word.toLowerCase().equals(toFind.toLowerCase())) {
@@ -118,7 +120,7 @@ public class Searcher {
     for (int i = 0; i < this.csv.size(); i++) { // for each row
       ArrayList<String> row = this.csv.get(i);
       if (numCols != this.findNumCols(row)) {
-        // TODO: add error/warning handling here for a malformed row
+        this.malformedRows.add(this.csv.indexOf(row));
       }
       try {
         if (row.get(colIndex).toLowerCase().equals(toFind.toLowerCase())) {
@@ -143,5 +145,13 @@ public class Searcher {
       numCols++;
     }
     return numCols;
+  }
+
+  /**
+   * Method that retrieves the malformed rows in the CSV.
+   * @return ArrayList of malformed row indexes.
+   */
+  public ArrayList<Integer> getMalformedRows() {
+    return new ArrayList<>(this.malformedRows);
   }
 }
