@@ -2,7 +2,6 @@ package edu.brown.cs.student.mocks;
 
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
-import java.io.IOException;
 
 public class MockedCensusAPI implements BroadbandDatasource {
   private final BroadbandData data;
@@ -12,7 +11,7 @@ public class MockedCensusAPI implements BroadbandDatasource {
   }
 
   @Override
-  public BroadbandData getBroadband(String state, String county) throws IOException {
+  public BroadbandData getBroadband(String state, String county) {
     return this.data;
   }
 }

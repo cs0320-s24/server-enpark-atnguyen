@@ -56,7 +56,7 @@ public class Searcher {
     for (ArrayList<String> row : this.csv) {
       // statement to warn users that their CSV may be malformed, but it is still searchable
       if (numCols != this.findNumCols(row)) {
-        // TODO: add error/warning handling here for a malformed row
+
       }
       for (String word : row) { // check each column
         if (word.toLowerCase().equals(toFind.toLowerCase())) {
