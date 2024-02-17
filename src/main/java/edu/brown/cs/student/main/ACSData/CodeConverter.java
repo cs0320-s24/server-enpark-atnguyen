@@ -1,7 +1,7 @@
 package edu.brown.cs.student.main.ACSData;
 
-import edu.brown.cs.student.main.JSONAdaptors.Deserializer;
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
+import edu.brown.cs.student.main.JSONAdaptors.Deserializer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,12 +19,12 @@ public class CodeConverter {
   private BroadbandDatasource state;
   private final HashMap<String, String> stateMap = new HashMap<>();
   private String lastCalledState = ""; // the current state whose counties are in countyMap
-  private HashMap<String,String> countyMap = new HashMap<>();
+  private HashMap<String, String> countyMap = new HashMap<>();
 
   /**
    * The constructor of DataConvertor that defines the shared state.
    *
-   * @param state
+   * @param state the shared broadband state
    */
   public CodeConverter(BroadbandDatasource state) {
     this.state = state;
@@ -37,7 +37,7 @@ public class CodeConverter {
    * @return the code of that state
    */
   public String convertState(String state) throws IOException {
-    if (this.stateMap.isEmpty()){
+    if (this.stateMap.isEmpty()) {
       this.createStateMap();
     }
     String stateCode = this.stateMap.get(state);
@@ -48,9 +48,10 @@ public class CodeConverter {
   }
 
   /**
-   * A method that converts a county to its code. County map is populated with the last
-   * requested state's counties, so if a user queries the same state multiple times,
-   * the API doesn't have to create a new county map every time.
+   * A method that converts a county to its code. County map is populated with the last requested
+   * state's counties, so if a user queries the same state multiple times, the API doesn't have to
+   * create a new county map every time.
+   *
    * @param state the state the county belongs in.
    * @param county the county to be converted.
    * @return the code of that county.
@@ -81,7 +82,9 @@ public class CodeConverter {
     }
     HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
     clientConnection.connect(); // GET
-    if (clientConnection.getResponseCode() != 200) System.out.println("error");
+    if (clientConnection.getResponseCode() != 200) {
+      System.out.println("error");
+    }
     return clientConnection;
   }
 
@@ -90,7 +93,7 @@ public class CodeConverter {
    * use.
    *
    * @return a list of a list of strings that contain the states and their codes
-   * @throws IOException
+   * @throws IOException invalid input/output
    */
   private List<List<String>> getStateCodes() throws IOException {
     URL requestURL = new URL("https", "api.census.gov", "/data/2010/dec/sf1?get=NAME&for=state:*");
@@ -100,10 +103,12 @@ public class CodeConverter {
   }
 
   /**
-   * A method that gets the list of county codes in a state by ACS and deserializes it into a list that we can use.
+   * A method that gets the list of county codes in a state by ACS and deserializes it into a list
+   * that we can use.
+   *
    * @param state the state where the county exists.
    * @return a list of a list of strings that contain the states and their codes.
-   * @throws IOException
+   * @throws IOException invalid input/output
    */
   private List<List<String>> getCountyCodes(String state) throws IOException {
     URL requestURL =
@@ -119,19 +124,21 @@ public class CodeConverter {
 
   /**
    * A method that creates a hashmap from the list of states and their codes.
+   *
    * @return a hashmap that maps each state to their code.
    */
   private void createStateMap() throws IOException {
-      List<List<String>> list = this.getStateCodes();
-      for (List<String> row : list) {
-        String state = row.get(0);
-        String code = row.get(1);
-        this.stateMap.put(state.toLowerCase(), code);
-      }
+    List<List<String>> list = this.getStateCodes();
+    for (List<String> row : list) {
+      String state = row.get(0);
+      String code = row.get(1);
+      this.stateMap.put(state.toLowerCase(), code);
+    }
   }
 
   /**
    * A method that creates a hashmap from the list of counties in a state and their codes.
+   *
    * @param state the state where the county exists in.
    * @return a hashmap that maps each county to their code.
    */

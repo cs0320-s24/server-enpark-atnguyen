@@ -1,22 +1,19 @@
-package edu.brown.cs.student.mocks;
+package edu.brown.cs.student.TestLSV;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
-import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
 import edu.brown.cs.student.main.CSVData.CSVData;
-import edu.brown.cs.student.main.CSVData.CSVDatasource;
-import edu.brown.cs.student.main.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Handlers.LoadHandler;
+import edu.brown.cs.student.main.Handlers.SearchHandler;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
-public class TestBroadbandHandlerMocked {
+public class TestSearchCSV {
 
   @BeforeAll
   public static void setupOnce() {
@@ -39,14 +36,13 @@ public class TestBroadbandHandlerMocked {
       Types.newParameterizedType(Map.class, String.class, Object.class);
   private JsonAdapter<Map<String, Object>> adapter;
   private JsonAdapter<BroadbandData> broadbandDataAdapter;
-  LocalDateTime dateAndTime = LocalDateTime.now();
-  DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+  private CSVData data;
 
   @BeforeEach
   public void setup() {
-    BroadbandDatasource mockedSource =
-        new MockedCensusAPI(new BroadbandData("Marin County, California", "94.0", "06", "041",this.getTime()));
-    Spark.get("broadband", new BroadbandHandler(mockedSource));
+    this.data = new CSVData();
+    Spark.get("load", new LoadHandler(this.data));
+    Spark.get("search", new SearchHandler(this.data));
     Spark.awaitInitialization();
     Moshi moshi = new Moshi.Builder().build();
     this.adapter = moshi.adapter(this.mapStringObject);
@@ -55,7 +51,8 @@ public class TestBroadbandHandlerMocked {
 
   @AfterEach
   public void teardown() {
-    Spark.unmap("broadband");
+    Spark.unmap("load");
+    Spark.unmap("search");
     Spark.awaitStop();
   }
 
@@ -67,30 +64,31 @@ public class TestBroadbandHandlerMocked {
     clientConnection.connect();
     return clientConnection;
   }
-  private String getTime() {
-    LocalDateTime dateAndTime = LocalDateTime.now();
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    return dateAndTime.format(format);
-  }
 
-    @Test
-    public void testSimpleBroadbandResult() throws IOException {
 
-    HttpURLConnection connection = tryRequest("broadband?state=California&county=Marin");
+  @Test
+  public void testSimpleSearch() throws IOException {
+    HttpURLConnection connection =
+        tryRequest("load?file=data/census/dol_ri_earnings_disparity.csv&headers=yes");
     assertEquals(200, connection.getResponseCode());
     Map<String, Object> responseBody =
-          this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
-    assertEquals(
-        this.broadbandDataAdapter.toJson(
-            new BroadbandData("Marin County, California", "94.0", "06", "041",this.getTime())),
-          responseBody.get("broadband"));
+        this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
     assertEquals("success", responseBody.get("result"));
+
+    HttpURLConnection connection2 =
+        tryRequest("search?value=Black");
+    assertEquals(200, connection.getResponseCode());
+    Map<String, Object> responseBody2 =
+        this.adapter.fromJson(new Buffer().readFrom(connection2.getInputStream()));
+    assertEquals("success", responseBody.get("result"));
+    assertEquals("[[RI, Black,  $770.26 , 30424.80376,  $0.73 , 6%]]", responseBody2.get("data"));
     connection.disconnect();
   }
 
   @Test
-  public void testWithEmptyParameters() throws IOException {
-    HttpURLConnection connection = tryRequest("broadband?county=Marin");
+  public void testSearchNoParams() throws IOException {
+    HttpURLConnection connection =
+        tryRequest("search");
     assertEquals(200, connection.getResponseCode());
     Map<String, Object> responseBody =
         this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
@@ -99,13 +97,23 @@ public class TestBroadbandHandlerMocked {
   }
 
   @Test
-  public void testWithNoParameters() throws IOException {
-    HttpURLConnection connection = tryRequest("broadband");
+  public void testSearchIndex() throws IOException {
+    HttpURLConnection connection =
+        tryRequest("load?file=data/census/dol_ri_earnings_disparity.csv&headers=yes");
     assertEquals(200, connection.getResponseCode());
     Map<String, Object> responseBody =
         this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
-    assertEquals("error_bad_request", responseBody.get("result"));
+
+
+    HttpURLConnection connection2 =
+        tryRequest("search?value=Black&column=1");
+    assertEquals(200, connection.getResponseCode());
+    Map<String, Object> responseBody2 =
+        this.adapter.fromJson(new Buffer().readFrom(connection2.getInputStream()));
+    assertEquals("success", responseBody2.get("result"));
     connection.disconnect();
   }
+
+
 
 }

@@ -76,8 +76,8 @@ public class Searcher {
    * @param column - the column to look in.
    * @param hasHeaders - whether the CSV has headers.
    * @return - a List of rows with the desired word.
-   * @throws FactoryFailureException
-   * @throws IOException
+   * @throws FactoryFailureException error when parsing rows
+   * @throws IOException invalid input/output
    */
   public List<ArrayList<String>> search(String toFind, String column, boolean hasHeaders)
       throws IllegalArgumentException {

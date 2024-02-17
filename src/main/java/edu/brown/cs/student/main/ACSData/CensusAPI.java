@@ -10,6 +10,8 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import okio.Buffer;
 
@@ -19,8 +21,6 @@ import okio.Buffer;
  */
 public class CensusAPI implements BroadbandDatasource {
 
-
-
   /**
    * A method that returns the response given by ACS and properly uses the data in the cache or
    * loads it into the cache if it isn't there.
@@ -28,9 +28,8 @@ public class CensusAPI implements BroadbandDatasource {
    * @param state the state to be searches
    * @param county the county to be searched
    * @return the broadband data of the state and county
-   * @throws IOException
+   * @throws IOException invalid input/output
    */
-
   @Override
   public BroadbandData getBroadband(String state, String county) throws IOException {
     return getBroadBandPercentage(state, county);
@@ -64,9 +63,8 @@ public class CensusAPI implements BroadbandDatasource {
    * @param state the state to be searched
    * @param county the county to be searched
    * @return the data converted into a BroadbandData record
-   * @throws IOException
+   * @throws IOException invalid input/output
    */
-
   private static BroadbandData getBroadBandPercentage(String state, String county)
       throws IOException {
     URL requestURL =
@@ -86,6 +84,12 @@ public class CensusAPI implements BroadbandDatasource {
         adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
     clientConnection.disconnect();
     return new BroadbandData(
-        data.get(1).get(0), data.get(1).get(1), data.get(1).get(2), data.get(1).get(3));
+        data.get(1).get(0), data.get(1).get(1), data.get(1).get(2), data.get(1).get(3), getTime());
+  }
+
+  private static String getTime() {
+    LocalDateTime dateAndTime = LocalDateTime.now();
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    return dateAndTime.format(format);
   }
 }

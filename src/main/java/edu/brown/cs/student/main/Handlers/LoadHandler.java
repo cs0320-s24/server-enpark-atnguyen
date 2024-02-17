@@ -1,10 +1,10 @@
 package edu.brown.cs.student.main.Handlers;
 
+import edu.brown.cs.student.main.CSVData.CSVDatasource;
+import edu.brown.cs.student.main.CSVFunctions.CSVParser;
 import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.ArrayListCreator;
 import edu.brown.cs.student.main.CSVFunctions.CreatorFromRowClasses.FactoryFailureException;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.CSVFunctions.CSVParser;
-import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ public class LoadHandler implements Route {
    *
    * @param state the shared state between load, search, and view
    */
+
   public LoadHandler(CSVDatasource state) {
     this.state = state;
   }
@@ -34,7 +35,7 @@ public class LoadHandler implements Route {
    * user.
    *
    * @param request the request made by the user
-   * @param response
+   * @param response response to be made
    * @return: a JSON that holds the data to be shown to the user
    */
   @Override
@@ -91,7 +92,7 @@ public class LoadHandler implements Route {
    * A method that converts the user's response to if the file has headers or not into a boolean.
    *
    * @param hasHeaders the response to the headers parameter
-   * @return
+   * @return true if hasHeaders false if doesn't
    */
   private boolean convertHeaderResponse(String hasHeaders) {
     if (hasHeaders == null || hasHeaders.isEmpty()) {

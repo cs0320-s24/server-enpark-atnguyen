@@ -10,32 +10,30 @@ import java.util.List;
 public interface CSVDatasource {
 
   /**
-   * Gets the current CSV
+   * Gets the current CSV.
    *
-   * @return
+   * @return the current CSV
    */
   List<ArrayList<String>> getCurrentCSV();
-  //      throws DatasourceException, IllegalArgumentException;
 
   /**
-   * Sets the current CSV
+   * Sets the current CSV.
    *
-   * @param parsedCSV
+   * @param parsedCSV the parsed CSV
    */
   void setCurrentCSV(List<ArrayList<String>> parsedCSV);
 
   /**
-   * Gets the CSV headers
+   * Gets the CSV headers.
    *
-   * @return
+   * @return returns the headers
    */
   ArrayList<String> getCSVHeaders();
-  //      throws DatasourceException, IllegalArgumentException;
 
   /**
-   * Sets the CSV headers
+   * Sets the CSV headers.
    *
-   * @param headers
+   * @param headers headers of the CSV
    */
   void setCSVHeaders(ArrayList<String> headers);
 }

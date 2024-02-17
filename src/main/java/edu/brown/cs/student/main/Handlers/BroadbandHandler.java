@@ -1,9 +1,9 @@
 package edu.brown.cs.student.main.Handlers;
 
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
 import edu.brown.cs.student.main.ACSData.CodeConverter;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +20,7 @@ public class BroadbandHandler implements Route {
   /**
    * The constructor of the BroadbandHandler class that initializes the state.
    *
-   * @param state
+   * @param state broadband shared state
    */
   public BroadbandHandler(BroadbandDatasource state) {
     this.sharedState = state;
@@ -31,7 +31,7 @@ public class BroadbandHandler implements Route {
    * the user.
    *
    * @param request The request made by the user
-   * @param response
+   * @param response response to be made
    * @return: a JSON that holds the data to be shown to the user
    */
   @Override
@@ -54,18 +54,16 @@ public class BroadbandHandler implements Route {
       responseMap.put("state", state);
       responseMap.put("county", county);
       responseMap.put("broadband", data);
-      responseMap.put("current time", this.getTime());
     } catch (IllegalArgumentException e) {
       responseMap.put("result", "error_bad_request");
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       responseMap.put("result", "error_datasource");
     }
     return new Serializer().serialize(responseMap);
   }
 
   /**
-   * A helper method that gets the time of when the query was made
+   * A helper method that gets the time of when the query was made.
    *
    * @return the time in a string
    */
