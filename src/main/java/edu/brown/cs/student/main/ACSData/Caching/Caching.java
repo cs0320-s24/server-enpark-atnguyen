@@ -1,8 +1,7 @@
 package edu.brown.cs.student.main.ACSData.Caching;
 
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.Cache;
-
+import com.google.common.cache.CacheBuilder;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +21,6 @@ public class Caching implements BroadbandDatasource {
    * @param size size of the cache
    * @param durationInMinutes amount of time before cache expires
    */
-
   public Caching(BroadbandDatasource toWrap, int size, int durationInMinutes) {
     // set default size and duration if invalid
     if (size < 1) {
@@ -47,26 +45,18 @@ public class Caching implements BroadbandDatasource {
    * @param state the state to be searched
    * @param county the county to be searched
    * @return the broadband data of the state and county
-   * @throws IOException
+   * @throws IOException invalid input/output
    */
   @Override
   public BroadbandData getBroadband(String state, String county) throws IOException {
     BroadbandData data = this.cache.getIfPresent(state + county);
     if (data == null) {
-      data = toWrap.getBroadband(state, county);
-      data = this.toWrap.getBroadband(state,county);
+      data = this.toWrap.getBroadband(state, county);
       this.cache.put(state + county, data);
     }
     return data;
   }
 
 
-  public boolean isValueInCache(String state, String county) {
-    BroadbandData data = this.cache.getIfPresent(state + county);
-    if (data == null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+
 }

@@ -12,11 +12,8 @@ public interface BroadbandDatasource {
    * @param state the state to be searched
    * @param county the county to be searched
    * @return the data in the form of the BroadbandData record
-   * @throws IOException
+   * @throws IOException invalid input/output
    */
- // BroadbandData getBroadband(String state, String county, String time) throws IOException;
 
   BroadbandData getBroadband(String state, String county) throws IOException;
-
-
 }

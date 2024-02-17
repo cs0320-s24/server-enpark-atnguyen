@@ -1,29 +1,34 @@
-package edu.brown.cs.student;
+package edu.brown.cs.student.mocks;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
-import edu.brown.cs.student.main.ACSData.Caching.Caching;
+import edu.brown.cs.student.main.CSVData.CSVData;
+import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import edu.brown.cs.student.main.Handlers.BroadbandHandler;
-import edu.brown.cs.student.mocks.MockedCensusAPI;
+import edu.brown.cs.student.main.Handlers.LoadHandler;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import okio.Buffer;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
-public class TestCaching {
+public class TestBroadbandHandlerMocked {
+
   @BeforeAll
   public static void setupOnce() {
     Spark.port(0);
@@ -34,13 +39,13 @@ public class TestCaching {
       Types.newParameterizedType(Map.class, String.class, Object.class);
   private JsonAdapter<Map<String, Object>> adapter;
   private JsonAdapter<BroadbandData> broadbandDataAdapter;
-  private Caching cache;
+  LocalDateTime dateAndTime = LocalDateTime.now();
+  DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
   @BeforeEach
   public void setup() {
     BroadbandDatasource mockedSource =
-        new MockedCensusAPI(new BroadbandData("Marin County, California", "94.0", "06", "041"));
-    this.cache = new Caching(mockedSource, 3,1);
+        new MockedCensusAPI(new BroadbandData("Marin County, California", "94.0", "06", "041",this.getTime()));
     Spark.get("broadband", new BroadbandHandler(mockedSource));
     Spark.awaitInitialization();
     Moshi moshi = new Moshi.Builder().build();
@@ -62,30 +67,30 @@ public class TestCaching {
     clientConnection.connect();
     return clientConnection;
   }
-
-  @Test
-  public void testIfCacheEliminates() throws IOException, InterruptedException {
-    String state = "California";
-    String county = "Marin";
-    tryRequest("broadband?state=" + state + "&county=" + county);
-    Thread.sleep(6000);
-    Assert.assertFalse(this.cache.isValueInCache(state,county));
+  private String getTime() {
+    LocalDateTime dateAndTime = LocalDateTime.now();
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    return dateAndTime.format(format);
   }
 
   @Test
-  public void testCache() throws IOException {
-    String state = "California";
-    String county = "Marin";
-
-    HttpURLConnection connection = tryRequest("broadband?state=" + state + "&county=" + county);
+  public void testWithEmptyParameters() throws IOException {
+    HttpURLConnection connection = tryRequest("broadband?county=Marin");
+    assertEquals(200, connection.getResponseCode());
     Map<String, Object> responseBody =
         this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
-    HttpURLConnection connection2 = tryRequest("broadband?state=" + state + "&county=" + county);
-    Map<String, Object> responseBody2 =
-        this.adapter.fromJson(new Buffer().readFrom(connection2.getInputStream()));
+    assertEquals("error_bad_request", responseBody.get("result"));
+    connection.disconnect();
+  }
 
-
-    Assert.assertEquals(responseBody.get("current time"), responseBody2.get("current time"));
+  @Test
+  public void testWithNoParameters() throws IOException {
+    HttpURLConnection connection = tryRequest("broadband");
+    assertEquals(200, connection.getResponseCode());
+    Map<String, Object> responseBody =
+        this.adapter.fromJson(new Buffer().readFrom(connection.getInputStream()));
+    assertEquals("error_bad_request", responseBody.get("result"));
+    connection.disconnect();
   }
 
 }

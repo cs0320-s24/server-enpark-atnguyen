@@ -1,8 +1,8 @@
 package edu.brown.cs.student.main.Handlers;
 
-import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.CSVFunctions.Searcher;
 import edu.brown.cs.student.main.CSVData.CSVDatasource;
+import edu.brown.cs.student.main.CSVFunctions.Searcher;
+import edu.brown.cs.student.main.JSONAdaptors.Serializer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ public class SearchHandler implements Route {
    * for into a JSON to be returned to the user.
    *
    * @param request the request made by the user
-   * @param response
+   * @param response response to be made
    * @return a JSON that holds the data to be shown to the user
    */
   @Override

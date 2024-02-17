@@ -2,15 +2,15 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
 import edu.brown.cs.student.main.ACSData.Caching.Caching;
 import edu.brown.cs.student.main.ACSData.CensusAPI;
+import edu.brown.cs.student.main.CSVData.CSVData;
+import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import edu.brown.cs.student.main.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Handlers.ViewHandler;
-import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
-import edu.brown.cs.student.main.CSVData.CSVData;
-import edu.brown.cs.student.main.CSVData.CSVDatasource;
 import spark.Spark;
 
 /** The Main class of our project. This is where execution begins. */
@@ -18,7 +18,7 @@ public final class Server {
 
   private final CSVDatasource CSVstate;
   private final BroadbandDatasource broadbandState;
-  static final int port = 3233;
+  static final int port = 3232;
 
   /**
    * The initial method called when execution begins.
@@ -32,8 +32,8 @@ public final class Server {
   /**
    * Constructor of Server that defines the shared state and calls on our port to start.
    *
-   * @param CSVstate
-   * @param broadbandState
+   * @param CSVstate the shared state
+   * @param broadbandState the shared broadband state
    */
   private Server(CSVDatasource CSVstate, BroadbandDatasource broadbandState) {
     this.CSVstate = CSVstate;

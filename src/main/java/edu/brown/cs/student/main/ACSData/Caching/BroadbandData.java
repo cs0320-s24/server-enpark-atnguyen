@@ -8,4 +8,4 @@ package edu.brown.cs.student.main.ACSData.Caching;
  * @param state the state
  * @param county the county
  */
-public record BroadbandData(String name, String percentage, String state, String county) {}
+public record BroadbandData(String name, String percentage, String state, String county, String time) {}

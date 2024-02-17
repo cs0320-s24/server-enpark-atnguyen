@@ -1,9 +1,9 @@
 package edu.brown.cs.student.main.Handlers;
 
 import edu.brown.cs.student.main.ACSData.Caching.BroadbandData;
+import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
 import edu.brown.cs.student.main.ACSData.CodeConverter;
 import edu.brown.cs.student.main.JSONAdaptors.Serializer;
-import edu.brown.cs.student.main.ACSData.Caching.BroadbandDatasource;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -54,7 +54,6 @@ public class BroadbandHandler implements Route {
       responseMap.put("state", state);
       responseMap.put("county", county);
       responseMap.put("broadband", data);
-      responseMap.put("current time", this.getTime());
     } catch (IllegalArgumentException e) {
       responseMap.put("result", "error_bad_request");
     } catch (IOException e) {

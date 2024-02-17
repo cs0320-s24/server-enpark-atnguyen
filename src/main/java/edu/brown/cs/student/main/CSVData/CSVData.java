@@ -13,7 +13,7 @@ public class CSVData implements CSVDatasource {
   private ArrayList<String> csvHeaders;
 
   /**
-   * A method that gets the current CSV
+   * A method that gets the current CSV.
    *
    * @return a defensive copy of the parsed CSV
    */
@@ -25,7 +25,7 @@ public class CSVData implements CSVDatasource {
   /**
    * A method that sets the parsedCSV variable to the current CSV.
    *
-   * @param parsedCSV
+   * @param parsedCSV the parsed CSV
    */
   @Override
   public void setCurrentCSV(List<ArrayList<String>> parsedCSV) {
@@ -45,7 +45,7 @@ public class CSVData implements CSVDatasource {
   /**
    * A method that sets the csvHeaders variable to the current CSV's headers.
    *
-   * @param headers
+   * @param headers the CSV headers
    */
   @Override
   public void setCSVHeaders(ArrayList<String> headers) {
