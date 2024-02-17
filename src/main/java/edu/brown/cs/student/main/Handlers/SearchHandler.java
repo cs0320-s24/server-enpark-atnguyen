@@ -62,6 +62,7 @@ public class SearchHandler implements Route {
       if (headers.isEmpty()) {
         hasHeaders = false;
       }
+
       Searcher searcher;
       if (hasHeaders) {
         searcher = new Searcher(csv, headers);

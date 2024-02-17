@@ -23,6 +23,7 @@ public class CodeConverter {
 
   /**
    * The constructor of DataConvertor that defines the shared state.
+   *
    * @param state
    */
   public CodeConverter(BroadbandDatasource state) {
@@ -31,6 +32,7 @@ public class CodeConverter {
 
   /**
    * A method that converts a state to its code.
+   *
    * @param state the state to be converted
    * @return the code of that state
    */
@@ -65,8 +67,9 @@ public class CodeConverter {
   }
 
   /**
-   * Private helper method; throws IOException so different callers
-   * can handle differently if needed.
+   * Private helper method; throws IOException so different callers can handle differently if
+   * needed.
+   *
    * @param requestURL
    * @return
    * @throws IOException
@@ -74,16 +77,20 @@ public class CodeConverter {
   private static HttpURLConnection connect(URL requestURL) throws IOException {
     URLConnection urlConnection = requestURL.openConnection();
     if (!(urlConnection instanceof HttpURLConnection)) {
-      System.out.println("error");
+      throw new IOException();
     }
     HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
     clientConnection.connect(); // GET
-    if (clientConnection.getResponseCode() != 200) System.out.println("error");
+    if (clientConnection.getResponseCode() != 200) {
+      throw new IOException();
+    }
     return clientConnection;
   }
 
   /**
-   * A method that gets the list of state codes by ACS and deserializes it into a list that we can use.
+   * A method that gets the list of state codes by ACS and deserializes it into a list that we can
+   * use.
+   *
    * @return a list of a list of strings that contain the states and their codes
    * @throws IOException
    */
